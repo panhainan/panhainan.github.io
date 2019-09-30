@@ -404,7 +404,7 @@ pre {
   overflow: hidden;
 }
 @media screen and (max-width: 767px) {
-	.post{
+	.m-post .post{
 		padding:10px;
 	}
 }
