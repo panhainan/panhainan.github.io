@@ -403,6 +403,11 @@ pre {
   position: relative;
   overflow: hidden;
 }
+@media screen and (max-width: 767px) {
+	.post{
+		padding:10px;
+	}
+}
 .post .featured {
   position: absolute;
   background: #3194D2;

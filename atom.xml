@@ -292,9 +292,9 @@
     
       <category term="SpringMVC" scheme="http://panhainan.github.io/tags/SpringMVC/"/>
     
-      <category term="日期数据绑定" scheme="http://panhainan.github.io/tags/%E6%97%A5%E6%9C%9F%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/"/>
-    
       <category term="数据绑定" scheme="http://panhainan.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/"/>
+    
+      <category term="日期数据绑定" scheme="http://panhainan.github.io/tags/%E6%97%A5%E6%9C%9F%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/"/>
     
   </entry>
   
