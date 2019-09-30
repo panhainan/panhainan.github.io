@@ -1,0 +1,367 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="SpringMVC,数据绑定">
+
+
+<meta name="description" content="接着上篇对于form表单形式和url直接传参形式讲解，继续进行对JSON格式和XML格式数据解析绑定的讲解。 
+
+内容大纲　　1. JSON格式　　　　1.1 简单对象　　　　1.2 简单对象包...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    SpringMVC数据绑定(JSON格式和XML格式) |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:80%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="SpringMVC数据绑定(JSON格式和XML格式)">
+            
+            SpringMVC数据绑定(JSON格式和XML格式)
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2018/03/20</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/SpringMVC/">SpringMVC</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/SpringMVC/">SpringMVC</a> <a class="tag-link" href="/tags/数据绑定/">数据绑定</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                559</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>接着上篇对于form表单形式和url直接传参形式讲解，继续进行对JSON格式和XML格式数据解析绑定的讲解。 </p>
+<a id="more"></a>
+<h2 id="内容大纲"><a href="#内容大纲" class="headerlink" title="内容大纲"></a><strong>内容大纲</strong></h2><p>　　1. JSON格式<br>　　　　1.1 简单对象<br>　　　　1.2 简单对象包含对象，即多层级对象<br>　　　　1.3 对象数组<br>　　　　1.4 集合List类型<br>　　2. XML格式</p>
+<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a><strong>开发工具</strong></h2><p>　　Spring版本: <code>4.1.6.RELEASE</code><br>　　IDE工具版本: IntelliJ IDEA 2017<br>　　请求模拟工具: Postman  </p>
+<hr>
+<h3 id="1-JSON格式"><a href="#1-JSON格式" class="headerlink" title="1. JSON格式"></a><strong>1. JSON格式</strong></h3><p>　　实现SpringMVC对于JSON数据解析绑定需要进行以下4步：<br>　　1). 导入json的jar包：jackson，如对应的maven的pom为<br> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>　　2). 在spring-mvc的配置文件中添加对于json数据解析绑定的配置，这里可以通过<code>&lt;mvc:annotation-driven/&gt;</code>直接快速使用；<br>　　3). 前台发送请求必须注明[“Content-Type”:”application/json”]，同时需要将传递的JSON数据字符串化，如User对象的JSON字符串形式为：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>:<span class="string">"Tom"</span>,</span><br><span class="line">   <span class="attr">"age"</span>:<span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　4). 在controller中进行接收时，需要在参数位置前指定 @RequestBody 注解。</p>
+<h4 id="1-1-简单对象（简单对象包含对象，即多层级对象）"><a href="#1-1-简单对象（简单对象包含对象，即多层级对象）" class="headerlink" title="1.1 简单对象（简单对象包含对象，即多层级对象）"></a><strong>1.1 简单对象（简单对象包含对象，即多层级对象）</strong></h4><p>　　继续在上一篇中提到的DataBindController类中增加以下方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JSON格式简单对象</span></span><br><span class="line"><span class="comment"> * post方式：http://localhost:8080/springmvc/jsonObjectType</span></span><br><span class="line"><span class="comment"> * 注明["Content-Type":"application/json"]以及参数为&#123; "name":"Tom","age":20 &#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> user</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> json串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/jsonObjectType"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">jsonObjectType</span><span class="params">(@RequestBody User user)</span></span>&#123;</span><br><span class="line">    String msg = user.toString();</span><br><span class="line">    logger.info(msg);</span><br><span class="line">    <span class="keyword">return</span> msg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　打开Postman，填写好相关参数，提交post请求，可以看到如下结果：<br><img src="http://img3.baxias.tech/springmvc003.png" alt><br>　　返回值 <code>User{name=&#39;Tom&#39;, age=20}</code> 表示请求成功。</p>
+<h4 id="1-2-简单对象包含对象，即多层级对象"><a href="#1-2-简单对象包含对象，即多层级对象" class="headerlink" title="1.2 简单对象包含对象，即多层级对象"></a><strong>1.2 简单对象包含对象，即多层级对象</strong></h4><p>　　继续测试简单对象包含对象（即多层级对象）,增加两个类ContactInfo{phone,email}和Person{name,age,contactInfo}，实现get，set和toString方法。<br>　　加入以下代码到DataBindController类中，提交post请求并填写好请求参数。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JSON格式多层级简单对象</span></span><br><span class="line"><span class="comment"> * post方式：http://localhost:8080/springmvc/jsonObjectsType</span></span><br><span class="line"><span class="comment"> * 注明["Content-Type":"application/json"]以及参数为&#123; "name":"Tom","age":20,"contactInfo":&#123; "phone":"18074609999","email":"test@yeah.net"&#125; &#125;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> person</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> json串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/jsonObjectsType"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">jsonObjectsType</span><span class="params">(@RequestBody Person person)</span> </span>&#123;</span><br><span class="line">    String msg = person.toString();</span><br><span class="line">    logger.info(msg);</span><br><span class="line">    <span class="keyword">return</span> msg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　返回结果为 <code>{ &quot;name&quot;:&quot;Tom&quot;,&quot;age&quot;:20,&quot;contactInfo&quot;:{ &quot;phone&quot;:&quot;18074609999&quot;,&quot;email&quot;:&quot;test@yeah.net&quot;} }</code>，表示请求成功。</p>
+<h4 id="1-3-对象数组"><a href="#1-3-对象数组" class="headerlink" title="1.3 对象数组"></a><strong>1.3 对象数组</strong></h4><p>　　同上述简单对象类似，只需要在参数位置将其改为数组形式即可，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JSON格式简单对象数组</span></span><br><span class="line"><span class="comment"> * post方式：http://localhost:8080/springmvc/jsonObjectArrayType</span></span><br><span class="line"><span class="comment"> * 注明["Content-Type":"application/json"]以及参数为[&#123;"age":18,"name":"Tom"&#125;,&#123;"age":10,"name":"Jack"&#125;]</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> users</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> json串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/jsonObjectArrayType"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">jsonObjectArrayType</span><span class="params">(@RequestBody User[] users)</span></span>&#123;</span><br><span class="line">    StringBuilder msg = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (User user :users)&#123;</span><br><span class="line">        msg.append(user.toString()+<span class="string">" "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    logger.info(msg.toString());</span><br><span class="line">    <span class="keyword">return</span> msg.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　测试结果会得到 <code>User{name=&#39;Tom&#39;, age=18} User{name=&#39;Jack&#39;, age=10}</code>，请求成功。</p>
+<h4 id="1-4-集合List类型"><a href="#1-4-集合List类型" class="headerlink" title="1.4 集合List类型"></a><strong>1.4 集合List类型</strong></h4><p>　　将参数形式改为List<user>即可，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JSON格式简单对象List集合形式</span></span><br><span class="line"><span class="comment"> * post方式：http://localhost:8080/springmvc/jsonObjectListType</span></span><br><span class="line"><span class="comment"> * 注明["Content-Type":"application/json"]以及参数为[&#123;"age":18,"name":"Tom"&#125;,&#123;"age":10,"name":"Jack"&#125;]</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> userList</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/jsonObjectListType"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">jsonObjectListType</span><span class="params">(@RequestBody List&lt;User&gt; userList)</span> </span>&#123;</span><br><span class="line">    StringBuilder msg = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (User user : userList) &#123;</span><br><span class="line">        msg.append(user.toString() + <span class="string">" "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    logger.info(msg.toString());</span><br><span class="line">    <span class="keyword">return</span> msg.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></user></p>
+<p>　　可以看到测试结果与数组形式的结果相同，也是<code>User{name=&#39;Tom&#39;, age=18} User{name=&#39;Jack&#39;, age=10}</code>，请求成功。<br>　　这里需要注意参数形式为<code>List&lt;User&gt;</code>，如果像form表单那样传<code>UserListVO</code>时则会提示400错误。</p>
+<h3 id="2-XML格式"><a href="#2-XML格式" class="headerlink" title="2. XML格式"></a><strong>2. XML格式</strong></h3><p>　　实现SpringMVC对于JSON数据解析绑定需要进行以下4步：<br>　　1). 导入xml的jar包：因为spring-oxm提供对xml的支持，故引入spring-oxm即可;<br>　　2). 在spring-mvc的配置文件中添加对于xml数据解析绑定的配置，这里可以通过<code>&lt;mvc:annotation-driven/&gt;</code>直接快速使用<br>　　3). 前台发送请求必须注明[“Content-Type”:”application/xml”]，<br>　　　　同时需要注意，对于传输的指定对象，需要在对象的类里面进行相关操作，<br>　　　　在类上面添加@XmlRootElement(name=”如article”)，在其属性的所有get方法上根据需要分别添加对应的@XmlElement(name = “如title,content”)，分别表示xml文件中的根节点和节点<br>　　　　同时注意参数的形式，如Article对象，<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">article</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>here is title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">content</span>&gt;</span>here is content<span class="tag">&lt;/<span class="name">content</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">article</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>　　4). 在controller中进行接收时，需要在参数位置前指定 @RequestBody 注解。  </p>
+<p>　　继续添加以下方法到DataBindController类中，在Postman中填写好参数，提交post请求，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * XML格式</span></span><br><span class="line"><span class="comment"> * post方式：http://localhost:8080/springmvc/xmlType</span></span><br><span class="line"><span class="comment"> * 注明["Content-Type":"application/xml"]以及参数为</span></span><br><span class="line"><span class="comment"> * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;article&gt;&lt;title&gt;here is title&lt;/title&gt;&lt;content&gt;here is content&lt;/content&gt;&lt;/article&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> article</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> json串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/xmlType"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">xmlType</span><span class="params">(@RequestBody Article article)</span></span>&#123;</span><br><span class="line">    String msg = article.toString();</span><br><span class="line">    logger.info(msg);</span><br><span class="line">    <span class="keyword">return</span> msg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　结果显示 <code>Article{title=&#39;here is title&#39;, content=&#39;here is content&#39;}</code>,表示请求成功。</p>
+<p>　　本文的代码可以在github上找到，地址为：<a href="https://github.com/panhainan/spring-family" target="_blank">github.com/panhainan/spring-family</a>  </p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2018/03/21/Java注解以及自定义注解/" class="pre-post btn btn-default" title='Java注解以及自定义注解'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            Java注解以及自定义注解</span>
+    </a>
+    
+    
+    <a href="/2018/03/19/SpringMVC数据绑定-form表单和url形式传参/" class="next-post btn btn-default" title='SpringMVC数据绑定(form表单和url形式传参)'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            SpringMVC数据绑定(form表单和url形式传参)</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "sixteen-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内容大纲"><span class="toc-text">内容大纲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开发工具"><span class="toc-text">开发工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-JSON格式"><span class="toc-text">1. JSON格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-简单对象（简单对象包含对象，即多层级对象）"><span class="toc-text">1.1 简单对象（简单对象包含对象，即多层级对象）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-简单对象包含对象，即多层级对象"><span class="toc-text">1.2 简单对象包含对象，即多层级对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-对象数组"><span class="toc-text">1.3 对象数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-集合List类型"><span class="toc-text">1.4 集合List类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-XML格式"><span class="toc-text">2. XML格式</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/tagcanvas.min.js?rev=2.9"></script>
+<script>
+var tagOption = {
+    textColour: '#444', // 字体颜色
+    outlineMethod: 'block', // 选中模式
+    outlineColour: '#FFDAB9', // 选中模式的颜色
+    interval: 30 || 30, // 动画帧之间的时间间隔，值越大，转动幅度越大
+    textHeight: 13,
+    outlineRadius: 3,
+    freezeActive: true || '', // 选中的标签是否继续滚动
+    frontSelect: true || '', // 不选标签云后部的标签
+    initial: [0.1, -0.1],
+    depth: 0.5,
+    decel: 0.95,
+    maxSpeed: 0.03,
+    reverse: true || '', // 是否反向触发
+    fadeIn: 500, // 进入动画时间
+    wheelZoom: false || '' // 是否启用鼠标滚轮
+}
+TagCanvas.Start('tag-cloud-3d', '', tagOption);
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>

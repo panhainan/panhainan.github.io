@@ -1,0 +1,385 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="命令行运行Java程序">
+
+
+<meta name="description" content="对这个一直有很大的疑惑，总处于那种似懂非懂的感觉，相信很多人都在开始学Java的时候用了一小会command line来运行Java application，但是很少有人用这个来尝试多个clas...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    使用命令行编译运行Java程序 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:80%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="使用命令行编译运行Java程序">
+            
+            使用命令行编译运行Java程序
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2016/09/01</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/Java/">Java</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/命令行运行Java程序/">命令行运行Java程序</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                1124</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>对这个一直有很大的疑惑，总处于那种似懂非懂的感觉，相信很多人都在开始学Java的时候用了一小会command line来运行Java application，但是很少有人用这个来尝试多个class或者使用了external jar。昨晚开始想了一下，来试试这样操作的样子，然后一弄就是几个小时，搞不定，1.多了必须睡觉，想着明天还得上班。<br>　　今天下了班，然后再开始尝试，网上找到了两篇博客，也是看的困惑，不知道是他写的比较乱还是什么，在自己的环境总是运行起来，百度一堆都是些垃圾，然后终于还是想着用几个关键字来Google一下，然后就把自己的问题给解决了。这里保留一份这个问题的记录。</p>
+<h2 id="一、使用命令行编译运行引用jar包的Java程序"><a href="#一、使用命令行编译运行引用jar包的Java程序" class="headerlink" title="一、使用命令行编译运行引用jar包的Java程序"></a><strong>一、使用命令行编译运行引用jar包的Java程序</strong></h2><p>　　我建了一个项目（就是一个空文件夹），名字叫做message，然后在里面按照Java project 的structure来建了一个src的文件，接着里面弄了org.fire.entity和org.fire.test两个package，其实在文件浏览器里面都是文件夹形式。然后分别在entity里面建了一个Message class，在test里面建了一个Test class，整个structure图如下：<br>　　<img src="http://img3.baxias.tech/01def99a-436e-49f7-8a25-6d45b8e0ba04.png">  </p>
+<p>　　两个Java class 的内容如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.fire.entity;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Message.java</span></span><br><span class="line"><span class="comment"> * Created by Pan on 2016/8/31.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Message</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Message</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saySomethingWithYou</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        System.out.println(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.fire.test;</span><br><span class="line"><span class="keyword">import</span> org.fire.entity.Message;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// write your code here</span></span><br><span class="line">        Message message = <span class="keyword">new</span> Message();</span><br><span class="line">        message.saySomethingWithYou(<span class="string">"nice to meet you!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　然后用javac来compile这个项目，将命令行的path切换到src下面，使用javac开始编译<br>　　<code>javac org\fire\entity\Message.java org\fire\test\Test.java</code><br>　　然后使用java来run Test 这个类的main方法，看看有没有达到相应的result。<br>　　<code>java org.fire.test.Test</code><br>　　<img src="http://img3.baxias.tech/1528ecfd-b468-4095-a280-a2b5dc747e15.png">  </p>
+<p>　　结果显示“nice to meet you!”<br>　　正好是main中需要print的value。<br>　　successful。<br>　　注意，以上都没有指定生成的字节码文件.class放置在具体位置，因此会默认将每个.java对应的.class放置在.java同一个目录。<br>　　我们可以使用<br>　　<code>-d bin</code><br>　　来指定.class生成的位置，这里可以尝试一下：<br>　　<img src="http://img3.baxias.tech/e8d7dab3-c67e-4b77-b51a-8e06bab16f71.png"><br>　　<img src="http://img3.baxias.tech/78dbcdb2-e2fc-4f66-90ad-ff681bb408b5.png"><br>　　<img src="http://img3.baxias.tech/9d1e66fa-f1a3-4840-8ac1-43c7a95a2868.png">  </p>
+<p>　　这里可能会注意到有<br>　　<code>-sourcepath src</code> </p>
+<p>　　这是因为目前我已经不在src目录下了，而是在src上级目录下，所以指定src为源代码文件夹位置。</p>
+<p>　　整个过程还有可以优化的地方，就是在使用javac来compile的时候。<br>　　think， 如果有多个java class 怎么办，一个一个write？It’s impossible。<br>　　这里将一种方便的方法，不过方便可能也是针对Linux环境说的。<br>　　新建一个txt放在src目录下吧，内容就按照如下方式写：<br>　　<img src="http://img3.baxias.tech/5db918e3-b0f1-4cac-ac0f-1fb270a092ed.png">  </p>
+<p>　　result如下图：<br>　　<img src="http://img3.baxias.tech/e23d7061-b952-4eb4-bd4f-4a2276060c1b.png">  </p>
+<p>　　successful。<br>　　上面所讲的source.txt在linux的环境下不需要手写了，使用命令：<br>　　<code>find -name &quot;*.java&quot; &gt; source.txt</code><br>　　即可生成。</p>
+<h2 id="二、使用命令行编译运行有引用外部jar的Java程序"><a href="#二、使用命令行编译运行有引用外部jar的Java程序" class="headerlink" title="二、使用命令行编译运行有引用外部jar的Java程序"></a><strong>二、使用命令行编译运行有引用外部jar的Java程序</strong></h2><h3 id="（一）将项目打包成jar"><a href="#（一）将项目打包成jar" class="headerlink" title="（一）将项目打包成jar"></a><strong>（一）将项目打包成jar</strong></h3><p>　　先将上面的项目打包成一个jar文件(jar中不包含源码，所以在上述javac操作后的bin目录下进行以下操作)<br>　　在bin目录下新建一个名为“META-INF”文件夹，然后在里面建一个名为“MANIFEST.MF”文件，注意后缀为mf，然后在MANIFEST.MF中写入一下代码（根据自己实际情况编写）<br>　　<img src="http://img3.baxias.tech/5c4dfeac-0961-41c3-8121-649667a45554.png">  </p>
+<p>　　注意事项：第一行是固定格式，定义版本号，第二行就是指明主类的位置可以用空格分开多个声明，注意冒号之后要有一个空格；然后注意的就是后面需要空出2行。<br>　　还要注意把bin下不用的文件删掉，即留下下图所示<br>　　<img src="http://img3.baxias.tech/29017634-9152-4a61-998e-149c887f2b0e.png">  </p>
+<p>　　然后在bin目录下的command line运行：</p>
+<p>　　<code>jar -cvfm message.jar META-INF\MANIFEST.MF .</code></p>
+<p>　　然后bin目录下多了一个文件，如图：<br>　　<img src="http://img3.baxias.tech/e715f56c-f7db-4a50-b01e-456002ff0b39.png">  </p>
+<p>　　可以将message解压看看内部内容，可以发现meta-inf下面的manifest.mf文件变成了这样，<br>　　<img src="http://img3.baxias.tech/009af3f2-3642-4bd0-91d3-2ad99d79c476.png"> </p>
+<p>　　程序运行结果：<br>　　<img src="http://img3.baxias.tech/3e4ca497-c23d-42e7-b67a-8b04332ff80a.png">   </p>
+<p>　　successful。<br>　　这里测试的只有一个主类，没有测试过多个主类，如果存在多个主类则需要在manifest.mf中定义多个，并且在运行的时候需要指定运行哪一个，假设这里有多个主类，我们需要运行org.fire.test.Test主类，则是在上面的基础上加上org.fire.test.Test即可，如图：<br>　　<img src="http://img3.baxias.tech/1490528b-7fb7-48df-9b37-92878f8b2d56.png"> </p>
+<h3 id="（二）新建项目来运行测试外部jar"><a href="#（二）新建项目来运行测试外部jar" class="headerlink" title="（二）新建项目来运行测试外部jar"></a><strong>（二）新建项目来运行测试外部jar</strong></h3><p>　　新建一个项目，然后弄个TestMessage class，结构如下：<br>　　<img src="http://img3.baxias.tech/df3134dc-f312-40c0-a18c-f016e70a1d97.png">    </p>
+<p>　　然后用javac compile,java run，result 如下：<br>　　<img src="http://img3.baxias.tech/3eeb0bdc-aacd-4aad-a210-e0b2de699e12.png"></p>
+<p>　　project 的structure如下：<br>　　<img src="http://img3.baxias.tech/715b86f1-9da9-4824-8934-199ceecea1ac.png"><br>　　注意：<br>　　在使用javac 来compile的时候，linux下分割jar采用冒号“：”，windows下采用分号“；”，在参考blog的第一篇文中有讲：</p>
+<blockquote>
+<p><strong>Task</strong><br>　　Lets say we have a fairly standard java project that consists of three top level folders:<br>　　　　/bin - empty folder that will contain compiled .class files<br>　　　　/lib - contains third party .jar files<br>　　　　/src - contains .java source files　　<br>　　Our task would be to compile and launch the project from its root folder. We will use Windows OS as example (on Unix systems the only difference would be path separation symbol - “:” instead of “;”).</p>
+</blockquote>
+<p>　　在使用java 来run 的时候，指定了bin为当前程序运行的目录。在参考blog的第一篇文中有讲，如下段：</p>
+<blockquote>
+<p><strong>Some Notes About Classpath</strong><br>　　Lets say during Application.java compilation a compiler stumbles upon somecom.example.Util class. How to find it in the file system? According to Java file naming rules,Util class has to be located somewhere in Util.java file under /com/example/ folder, but where to start searching for this path? Here is where classpath comes into play which sets the starting folder for searching for classes. Classpath can be set in 3 different ways:<br>　　1. If no –classpath parameter is passed, CLASSPATH environment variable is used<br>　　2. If CLASSPATH environment variable is not found, current folder (“.”) is used by default<br>　　3. If –classpath is explicitly set as a command line parameter, it overrides all other values<br>　　The fact that classpath when set overrides default value (current folder) can cause some unexpected results.<br>　　For example if we don’t use any third party libraries, only our own com.example.Util class, and try to compile Application.java from the src folder:<br>　　<code>javac com/example/Application.java</code><br>　　this would work, but then if we decide to add a third party libarary to the classpath:<br>　　<code>javac -cp lib/lib1.jar com/example/Application.java</code><br>　　it would cause an error:<br>　　<code>package com.example.Util does not exist</code><br>　　This happens because when we set -cp lib/lib1.jar we override default value for the classpath - current folder. Now a compiler will be looking for all classes only inside that jar file. To fix this we need to explicitly add the current folder to the classpath:<br>　　<code>javac -cp .;lib/lib1.jar com/example/Application.java</code></p>
+</blockquote>
+<p>　　好了，到此，这篇blog也是差不多了，其实还有很多东西讲的都不清楚，大家可以互相讨论，下面留言即可，我的blog停了将近 一年了，也是自己的问题，现在开了，互动会很快的，不要觉得博主不会看评论，先试试回答，不会有错的。</p>
+<p>　　这里提醒大家，最好用Google来进行English search，即使Google搜索再好，天朝内部的程序员社区却已经不好了，所以你不论是用百度还是用Google搜到的很多都是一样的rubbish。</p>
+<p>　　<strong>Bear in mind : Google Search in English 。</strong></p>
+<p>　　参考blog（order by quality）：</p>
+<ol>
+<li><a href="http://www.sergiy.ca/how-to-compile-and-launch-java-code-from-command-line/" target="_blank" rel="noopener">http://www.sergiy.ca/how-to-compile-and-launch-java-code-from-command-line/</a></li>
+<li><a href="http://stackoverflow.com/questions/17140512/how-to-compile-multiple-java-files-when-there-are-java-files-in-other-packages" target="_blank" rel="noopener">http://stackoverflow.com/questions/17140512/how-to-compile-multiple-java-files-when-there-are-java-files-in-other-packages</a></li>
+<li><a href="http://www.cnblogs.com/freeweb/p/5251358.html" target="_blank" rel="noopener">http://www.cnblogs.com/freeweb/p/5251358.html</a></li>
+<li><a href="http://stackoverflow.com/questions/13657849/run-java-application-from-command-line-with-external-jar-files" target="_blank" rel="noopener">http://stackoverflow.com/questions/13657849/run-java-application-from-command-line-with-external-jar-files</a></li>
+<li><a href="http://www.cnblogs.com/freeweb/p/5251358.html" target="_blank" rel="noopener">http://www.cnblogs.com/freeweb/p/5251358.html</a></li>
+<li><a href="http://www.importnew.com/11370.html" target="_blank" rel="noopener">http://www.importnew.com/11370.html</a></li>
+</ol>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2018/03/15/Java相关开发环境配置/" class="pre-post btn btn-default" title='Java相关开发环境配置'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            Java相关开发环境配置</span>
+    </a>
+    
+    
+    <a href="/2015/04/20/Java关键字之final和finally以及finalize/" class="next-post btn btn-default" title='Java关键字之final和finally以及finalize'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            Java关键字之final和finally以及finalize</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "sixteen-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、使用命令行编译运行引用jar包的Java程序"><span class="toc-text">一、使用命令行编译运行引用jar包的Java程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、使用命令行编译运行有引用外部jar的Java程序"><span class="toc-text">二、使用命令行编译运行有引用外部jar的Java程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（一）将项目打包成jar"><span class="toc-text">（一）将项目打包成jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（二）新建项目来运行测试外部jar"><span class="toc-text">（二）新建项目来运行测试外部jar</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/tagcanvas.min.js?rev=2.9"></script>
+<script>
+var tagOption = {
+    textColour: '#444', // 字体颜色
+    outlineMethod: 'block', // 选中模式
+    outlineColour: '#FFDAB9', // 选中模式的颜色
+    interval: 30 || 30, // 动画帧之间的时间间隔，值越大，转动幅度越大
+    textHeight: 13,
+    outlineRadius: 3,
+    freezeActive: true || '', // 选中的标签是否继续滚动
+    frontSelect: true || '', // 不选标签云后部的标签
+    initial: [0.1, -0.1],
+    depth: 0.5,
+    decel: 0.95,
+    maxSpeed: 0.03,
+    reverse: true || '', // 是否反向触发
+    fadeIn: 500, // 进入动画时间
+    wheelZoom: false || '' // 是否启用鼠标滚轮
+}
+TagCanvas.Start('tag-cloud-3d', '', tagOption);
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>

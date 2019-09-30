@@ -1,0 +1,366 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="算法,栈排序">
+
+
+<meta name="description" content="　　一个栈中的元素类型为整型，现在将该栈从栈顶到栈底按从大到小的顺序排序，只允许申请一个辅助栈。如何利用好这个辅助栈是这道题的解题关键所在。
+ 
+用一个辅助栈实现另一个栈的排序　　如何利用好这个...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    《程序员代码面试指南》用一个辅助栈实现另一个栈的排序 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:80%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="《程序员代码面试指南》用一个辅助栈实现另一个栈的排序">
+            
+            《程序员代码面试指南》用一个辅助栈实现另一个栈的排序
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2018/08/26</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/Algorithm/">Algorithm</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/栈排序/">栈排序</a> <a class="tag-link" href="/tags/算法/">算法</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                400</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>　　一个栈中的元素类型为整型，现在将该栈从栈顶到栈底按从大到小的顺序排序，只允许申请一个辅助栈。如何利用好这个辅助栈是这道题的解题关键所在。</p>
+<a id="more"></a> 
+<h1 id="用一个辅助栈实现另一个栈的排序"><a href="#用一个辅助栈实现另一个栈的排序" class="headerlink" title="用一个辅助栈实现另一个栈的排序"></a>用一个辅助栈实现另一个栈的排序</h1><p>　　如何利用好这个辅助栈是这道题的解题关键所在。</p>
+<h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>　　一个栈中的元素类型为整型，现在将该栈从栈顶到栈底按从大到小的顺序排序，只允许申请一个辅助栈。除此之外可以申请新的变量，但不能申请额外的数据结构。如何完成排序？</p>
+<h1 id="实现思想"><a href="#实现思想" class="headerlink" title="实现思想"></a>实现思想</h1><p>　　假设存有数据的栈名A，辅助栈为B；</p>
+<ol>
+<li><p>首先pop出A栈栈顶元素，将其push到B栈中；</p>
+</li>
+<li><p>接着，继续pop出A栈栈顶元素保存在变量cur中，然后和B栈栈顶元素（temp）比较：</p>
+<p>1）若cur&gt;temp，则将temp元素pop出B栈，push入A栈，继续和B栈栈顶元素进行上述的比较；</p>
+<p>2）若cur&lt;=temp ，则直接将cur元素push入B栈内；</p>
+</li>
+<li><p>继续第2步操作直至A栈空，然后将B栈元素一一push入A栈。</p>
+</li>
+<li><p>至此，排序完毕，A栈元素即是排序后的结果。</p>
+</li>
+</ol>
+<p><img src="http://img.baxias.tech/algorithm/StackSortByStack.png" alt></p>
+<p>#代码实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> site.sixteen.stack_queue;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Stack;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * StackSortByStack</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> panhainan@yeah.net(<span class="doctag">@link</span> https://sixteen.site)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@use</span> 用一个辅助栈实现另一个栈的排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2018/8/27</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackSortByStack</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">stackSortByStack</span><span class="params">(Stack&lt;Integer&gt; dataStack)</span> </span>&#123;</span><br><span class="line">        Stack&lt;Integer&gt; assistStack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        Integer cur;</span><br><span class="line">        <span class="keyword">while</span> (!dataStack.empty()) &#123;</span><br><span class="line">            cur = dataStack.pop();</span><br><span class="line">            <span class="keyword">while</span> (!assistStack.empty() &amp;&amp; assistStack.peek() &lt; cur) &#123;</span><br><span class="line">                dataStack.push(assistStack.pop());</span><br><span class="line">            &#125;</span><br><span class="line">            assistStack.push(cur);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (!assistStack.empty()) &#123;</span><br><span class="line">            dataStack.push(assistStack.pop());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Stack&lt;Integer&gt; data = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        data.push(<span class="number">3</span>);</span><br><span class="line">        data.push(<span class="number">4</span>);</span><br><span class="line">        data.push(<span class="number">2</span>);</span><br><span class="line">        data.push(<span class="number">1</span>);</span><br><span class="line">        data.push(<span class="number">5</span>);</span><br><span class="line">        stackSortByStack(data);</span><br><span class="line">        <span class="keyword">while</span> (!data.empty()) &#123;</span><br><span class="line">            System.out.println(data.pop());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2019/09/30/CentOS7防火墙操作/" class="pre-post btn btn-default" title='CentOS7防火墙相关操作命令'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            CentOS7防火墙相关操作命令</span>
+    </a>
+    
+    
+    <a href="/2018/08/24/《程序员代码面试指南》两个栈实现队列/" class="next-post btn btn-default" title='《程序员代码面试指南》两个栈实现队列'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            《程序员代码面试指南》两个栈实现队列</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "sixteen-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#用一个辅助栈实现另一个栈的排序"><span class="toc-text">用一个辅助栈实现另一个栈的排序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#题目"><span class="toc-text">题目</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实现思想"><span class="toc-text">实现思想</span></a></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/tagcanvas.min.js?rev=2.9"></script>
+<script>
+var tagOption = {
+    textColour: '#444', // 字体颜色
+    outlineMethod: 'block', // 选中模式
+    outlineColour: '#FFDAB9', // 选中模式的颜色
+    interval: 30 || 30, // 动画帧之间的时间间隔，值越大，转动幅度越大
+    textHeight: 13,
+    outlineRadius: 3,
+    freezeActive: true || '', // 选中的标签是否继续滚动
+    frontSelect: true || '', // 不选标签云后部的标签
+    initial: [0.1, -0.1],
+    depth: 0.5,
+    decel: 0.95,
+    maxSpeed: 0.03,
+    reverse: true || '', // 是否反向触发
+    fadeIn: 500, // 进入动画时间
+    wheelZoom: false || '' // 是否启用鼠标滚轮
+}
+TagCanvas.Start('tag-cloud-3d', '', tagOption);
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>

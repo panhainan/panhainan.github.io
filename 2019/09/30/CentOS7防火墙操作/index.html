@@ -1,0 +1,360 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="防火墙">
+
+
+<meta name="description" content="防火墙技术的功能主要在于及时发现并处理计算机网络运行时可能存在的安全风险、数据传输等问题，其中处理措施包括隔离与保护，同时可对计算机网络安全当中的各项操作实施记录与检测，以确保计算机网络运行的安...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    CentOS7防火墙相关操作命令 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:80%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="CentOS7防火墙相关操作命令">
+            
+            CentOS7防火墙相关操作命令
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2019/09/30</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/防火墙/">防火墙</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>防火墙技术的功能主要在于及时发现并处理计算机网络运行时可能存在的安全风险、数据传输等问题，其中处理措施包括隔离与保护，同时可对计算机网络安全当中的各项操作实施记录与检测，以确保计算机网络运行的安全性，保障用户资料与信息的完整性，为用户提供更好、更安全的计算机网络使用体验。</p>
+<a id="more"></a> 
+<h2 id="1-查看防火墙状态"><a href="#1-查看防火墙状态" class="headerlink" title="1. 查看防火墙状态"></a>1. 查看防火墙状态</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --state</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.baxias.tech/CentOS7防火墙操作.assets/1569845801709.png" alt="1569845801709" style="zoom:150%;"></p>
+<p>running表示已开启</p>
+<p>not running表示已关闭</p>
+<p>或者使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status firewalld.service</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.baxias.tech/CentOS7防火墙操作.assets/1569846087956.png" alt="1569846087956"></p>
+<h2 id="2-开启防火墙"><a href="#2-开启防火墙" class="headerlink" title="2. 开启防火墙"></a>2. 开启防火墙</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start firewalld.service</span><br></pre></td></tr></table></figure>
+<h2 id="3-设置开机自启"><a href="#3-设置开机自启" class="headerlink" title="3. 设置开机自启"></a>3. 设置开机自启</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable firewalld.serivce</span><br></pre></td></tr></table></figure>
+<h2 id="4-查看防火墙是否开机自启成功"><a href="#4-查看防火墙是否开机自启成功" class="headerlink" title="4. 查看防火墙是否开机自启成功"></a>4. 查看防火墙是否开机自启成功</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl is-enabled firewalld.service;echo $?</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.baxias.tech/CentOS7防火墙操作.assets/1569846147748.png" alt="1569846147748" style="zoom:150%;"></p>
+<h2 id="5-关闭防火墙"><a href="#5-关闭防火墙" class="headerlink" title="5. 关闭防火墙"></a>5. 关闭防火墙</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld.service</span><br></pre></td></tr></table></figure>
+<h2 id="6-开启特定端口"><a href="#6-开启特定端口" class="headerlink" title="6. 开启特定端口"></a>6. 开启特定端口</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone=public --add-port=port/tcp --permanent</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>–zone #作用域<br>        –add-port=80/tcp  #添加端口，格式为：端口/通讯协议<br>        –permanent   #永久生效，没有此参数重启后失效</p>
+</blockquote>
+<p>比如，开启80、3306、6379等端口</p>
+<p><img src="http://img.baxias.tech/CentOS7防火墙操作.assets/1569846434555.png" alt="1569846434555"></p>
+<h2 id="7-查看所有开放防火墙的端口"><a href="#7-查看所有开放防火墙的端口" class="headerlink" title="7. 查看所有开放防火墙的端口"></a>7. 查看所有开放防火墙的端口</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --list-ports</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.baxias.tech/CentOS7防火墙操作.assets/1569846535420.png" alt="1569846535420" style="zoom:150%;"></p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2019/09/30/CentOS7安装Docker/" class="pre-post btn btn-default" title='CentOS7安装Docker'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            CentOS7安装Docker</span>
+    </a>
+    
+    
+    <a href="/2018/08/26/《程序员代码面试指南》用一个辅助栈实现另一个栈的排序/" class="next-post btn btn-default" title='《程序员代码面试指南》用一个辅助栈实现另一个栈的排序'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            《程序员代码面试指南》用一个辅助栈实现另一个栈的排序</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "sixteen-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-查看防火墙状态"><span class="toc-text">1. 查看防火墙状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-开启防火墙"><span class="toc-text">2. 开启防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-设置开机自启"><span class="toc-text">3. 设置开机自启</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-查看防火墙是否开机自启成功"><span class="toc-text">4. 查看防火墙是否开机自启成功</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-关闭防火墙"><span class="toc-text">5. 关闭防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-开启特定端口"><span class="toc-text">6. 开启特定端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-查看所有开放防火墙的端口"><span class="toc-text">7. 查看所有开放防火墙的端口</span></a></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/tagcanvas.min.js?rev=2.9"></script>
+<script>
+var tagOption = {
+    textColour: '#444', // 字体颜色
+    outlineMethod: 'block', // 选中模式
+    outlineColour: '#FFDAB9', // 选中模式的颜色
+    interval: 30 || 30, // 动画帧之间的时间间隔，值越大，转动幅度越大
+    textHeight: 13,
+    outlineRadius: 3,
+    freezeActive: true || '', // 选中的标签是否继续滚动
+    frontSelect: true || '', // 不选标签云后部的标签
+    initial: [0.1, -0.1],
+    depth: 0.5,
+    decel: 0.95,
+    maxSpeed: 0.03,
+    reverse: true || '', // 是否反向触发
+    fadeIn: 500, // 进入动画时间
+    wheelZoom: false || '' // 是否启用鼠标滚轮
+}
+TagCanvas.Start('tag-cloud-3d', '', tagOption);
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="SpringMVC拦截器">
+
+
+<meta name="description" content="本文讲解一下SpringMVC拦截器的工作原理、如何使用以及针对静态资源放行的三种处理方法的相关问题。
+
+拦截器简介　　拦截器是指通过统一拦截从浏览器（或其他应用）发往服务器的请求来完成功能的增...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    SpringMVC拦截器及静态资源处理方法 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:80%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="SpringMVC拦截器及静态资源处理方法">
+            
+            SpringMVC拦截器及静态资源处理方法
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2018/03/30</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/SpringMVC/">SpringMVC</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/SpringMVC拦截器/">SpringMVC拦截器</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                549</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>本文讲解一下SpringMVC拦截器的工作原理、如何使用以及针对静态资源放行的三种处理方法的相关问题。</p>
+<a id="more"></a>
+<h2 id="拦截器简介"><a href="#拦截器简介" class="headerlink" title="拦截器简介"></a>拦截器简介</h2><p>　　拦截器是指通过统一拦截从浏览器（或其他应用）发往服务器的请求来完成功能的增强。<br>　　使用场景：解决请求的共性问题（如：乱码问题、权限验证问题）</p>
+<p>　　介绍拦截器的基本工作原理之前，先介绍一个例子：<strong>SpringMVC配置过滤器来解决乱码问题</strong><br>　　这个问题相信大家很熟悉，解决方法也是很简单，就是在web.xml里面配置一个filter，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- encoding --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>encodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>forceEncoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>encodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>　　进行如此配置，就解决了请求传中文参数乱码问题了。而SpringMVC的拦截器和过滤器非常相似。</p>
+<h2 id="拦截器的实现"><a href="#拦截器的实现" class="headerlink" title="拦截器的实现"></a>拦截器的实现</h2><ol>
+<li><p>实现HandlerInterceptor接口(还有实现WebRequestInterceptor接口，不过不建议)，会默认要求实现3个方法，根据需求进行设计;如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*此处还有可以实现WebRequestInterceptor接口，不过其实现的preHandle方法没有返回值，也就是不能终止请求，其注册配置方法也是一样*/</span></span><br><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * preHandle方法是进行处理器拦截用的，顾名思义，该方法将在Controller处理之前进行调用，</span></span><br><span class="line"><span class="comment">     * SpringMVC中的Interceptor拦截器是链式的，可以同时存在多个Interceptor，</span></span><br><span class="line"><span class="comment">     * 然后SpringMVC会根据声明的前后顺序一个接一个的执行，</span></span><br><span class="line"><span class="comment">     * 而且所有的Interceptor中的preHandle方法都会在Controller方法调用之前调用。</span></span><br><span class="line"><span class="comment">     * SpringMVC的这种Interceptor链式结构也是可以进行中断的，</span></span><br><span class="line"><span class="comment">     * 这种中断方式是令preHandle的返回值为false，当preHandle的返回值为false的时候整个请求就结束了。</span></span><br><span class="line"><span class="comment">     * 参数Object表示被拦截的请求的目标对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        log.debug(<span class="string">"执行到preHandle方法"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 这个方法只会在当前这个Interceptor的preHandle方法返回值为true的时候才会执行。</span></span><br><span class="line"><span class="comment">     * postHandle是进行处理器拦截用的，它的执行时间是在处理器进行处理之 后， 也就是在Controller的方法调用之后执行，</span></span><br><span class="line"><span class="comment">     * 但是它会在DispatcherServlet进行视图的渲染之前执行，也就是说在这个方法中你可以对ModelAndView进行操作。</span></span><br><span class="line"><span class="comment">     * 这个方法的链式结构跟正常访问的方向是相反的，也就是说先声明的Interceptor拦截器该方法反而会后调用，</span></span><br><span class="line"><span class="comment">     * 这跟Struts2里面的拦截器的执行过程有点像，</span></span><br><span class="line"><span class="comment">     * 只是Struts2里面的intercept方法中要手动的调用ActionInvocation的invoke方法，</span></span><br><span class="line"><span class="comment">     * Struts2中调用ActionInvocation的invoke方法就是调用下一个Interceptor或者是调用action，</span></span><br><span class="line"><span class="comment">     * 然后要在Interceptor之前调用的内容都写在调用invoke之前，要在Interceptor之后调用的内容都写在调用invoke方法之后。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postHandle</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        log.debug(<span class="string">"执行到postHandle方法"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 该方法也是需要当前对应的Interceptor的preHandle方法的返回值为true时才会执行。</span></span><br><span class="line"><span class="comment">     * 该方法将在整个请求完成之后，也就是DispatcherServlet渲染了视图执行， 这个方法的主要作用是用于清理资源的，</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCompletion</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        log.debug(<span class="string">"执行到afterCompletion方法"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在SpringMVC配置中注册;</p>
+</li>
+<li>配置拦截规则，根据需求进行设计。<br>　　2,3步的实现如下：<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 规则：</span></span><br><span class="line"><span class="comment">            1. /**拦截多级，如/test/hello</span></span><br><span class="line"><span class="comment">            2. /*拦截一级，如/test，不会拦截/test/**请求</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">"/**"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.panhainan.interceptor.TestInterceptor"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="拦截器和过滤器的区别"><a href="#拦截器和过滤器的区别" class="headerlink" title="拦截器和过滤器的区别"></a>拦截器和过滤器的区别</h2><p>过滤器Filter依赖于Servlet容器，基于回调函数，过滤范围大；<br>拦截器Interceptor依赖于框架容器，基于反射容器，只过滤请求。</p>
+<h2 id="SpringMVC针对静态资源如js，css等文件的三种处理方式："><a href="#SpringMVC针对静态资源如js，css等文件的三种处理方式：" class="headerlink" title="SpringMVC针对静态资源如js，css等文件的三种处理方式："></a>SpringMVC针对静态资源如js，css等文件的三种处理方式：</h2><h3 id="方法一：使用-mvc-resources"><a href="#方法一：使用-mvc-resources" class="headerlink" title="方法一：使用 mvc:resources"></a><strong>方法一：使用 <a href="mvc:resources" target="_blank" rel="noopener">mvc:resources</a></strong></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:resources</span> <span class="attr">location</span>=<span class="string">"/"</span> <span class="attr">mapping</span>=<span class="string">"/**/*.js"</span>/&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:resources</span> <span class="attr">location</span>=<span class="string">"/"</span> <span class="attr">mapping</span>=<span class="string">"/**/*.css"</span>/&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:resources</span> <span class="attr">location</span>=<span class="string">"/assets/"</span> <span class="attr">mapping</span>=<span class="string">"/assets/**/*"</span>/&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:resources</span> <span class="attr">location</span>=<span class="string">"/images/"</span> <span class="attr">mapping</span>=<span class="string">"/images/*"</span> <span class="attr">cache-period</span>=<span class="string">"360000"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">"/**/*"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/fonts/*"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/*.css"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/*.js"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/*.png"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/*.gif"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/*.jpg"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">"/**/*.jpeg"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.panhainan.interceptor.TestInterceptor"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="方法二：使用默认的静态资源处理Servlet处理静态资源"><a href="#方法二：使用默认的静态资源处理Servlet处理静态资源" class="headerlink" title="方法二：使用默认的静态资源处理Servlet处理静态资源"></a><strong>方法二：使用默认的静态资源处理Servlet处理静态资源</strong></h3><p>　　在spring-mvc.xml中启用默认Servlet<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:default-servlet-handler</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>　　在web.xml中增加对静态资源的处理，但是当前的设置必须在Spring的Dispatcher的前面<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>default<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>*.js<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>*.css<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/assets/*"<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>    </span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/images/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span>    </span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="方法三：修改Spring的全局拦截设置为-do的拦截"><a href="#方法三：修改Spring的全局拦截设置为-do的拦截" class="headerlink" title="方法三：修改Spring的全局拦截设置为*.do的拦截"></a><strong>方法三：修改Spring的全局拦截设置为*.do的拦截</strong></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>SpringMVC<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:spring-mvc.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">async-supported</span>&gt;</span>true<span class="tag">&lt;/<span class="name">async-supported</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>SpringMVC<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>*.do<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="三种方案的优劣分析"><a href="#三种方案的优劣分析" class="headerlink" title="三种方案的优劣分析"></a><strong>三种方案的优劣分析</strong></h3><ul>
+<li>第一种方案配置比较臃肿，多个拦截器时增加文件行数，不推荐使用；</li>
+<li>第二种方案使用默认的Servlet进行资源文件的访问，Spring拦截所有请求，然后再将资源文件交由默认的Servlet进行处理，性能上少有损耗；</li>
+<li>第三种方案Spring只是处理以”.do”结尾的访问，性能上更加高效，但是再访问路径上必须都以“.do”结尾，URL不太文雅。<br>综上所述，推荐使用第二和第三种方案</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://www.cnblogs.com/banning/p/6195072.html" target="_blank" rel="noopener">SpringMVC 拦截器不拦截静态资源的三种处理方式</a></p>
+<p><a href="https://www.cnblogs.com/lcngu/p/7096597.html" target="_blank" rel="noopener">SpringMVC之mvc:interceptors拦截器的用法</a></p>
+<p>　　本文的代码可以在github上找到，地址为：<a href="https://github.com/panhainan/spring-family" target="_blank">github.com/panhainan/spring-family</a>  </p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2018/04/02/SpringMVC数据绑定-Date类型/" class="pre-post btn btn-default" title='SpringMVC数据绑定（Date类型）'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            SpringMVC数据绑定（Date类型）</span>
+    </a>
+    
+    
+    <a href="/2018/03/29/版本管理工具Git快速掌握推荐阅读/" class="next-post btn btn-default" title='版本管理工具Git快速掌握推荐阅读'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            版本管理工具Git快速掌握推荐阅读</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "sixteen-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#拦截器简介"><span class="toc-text">拦截器简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拦截器的实现"><span class="toc-text">拦截器的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拦截器和过滤器的区别"><span class="toc-text">拦截器和过滤器的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SpringMVC针对静态资源如js，css等文件的三种处理方式："><span class="toc-text">SpringMVC针对静态资源如js，css等文件的三种处理方式：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：使用-mvc-resources"><span class="toc-text">方法一：使用 mvc:resources</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用默认的静态资源处理Servlet处理静态资源"><span class="toc-text">方法二：使用默认的静态资源处理Servlet处理静态资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法三：修改Spring的全局拦截设置为-do的拦截"><span class="toc-text">方法三：修改Spring的全局拦截设置为*.do的拦截</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三种方案的优劣分析"><span class="toc-text">三种方案的优劣分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-text">参考文章</span></a></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/tagcanvas.min.js?rev=2.9"></script>
+<script>
+var tagOption = {
+    textColour: '#444', // 字体颜色
+    outlineMethod: 'block', // 选中模式
+    outlineColour: '#FFDAB9', // 选中模式的颜色
+    interval: 30 || 30, // 动画帧之间的时间间隔，值越大，转动幅度越大
+    textHeight: 13,
+    outlineRadius: 3,
+    freezeActive: true || '', // 选中的标签是否继续滚动
+    frontSelect: true || '', // 不选标签云后部的标签
+    initial: [0.1, -0.1],
+    depth: 0.5,
+    decel: 0.95,
+    maxSpeed: 0.03,
+    reverse: true || '', // 是否反向触发
+    fadeIn: 500, // 进入动画时间
+    wheelZoom: false || '' // 是否启用鼠标滚轮
+}
+TagCanvas.Start('tag-cloud-3d', '', tagOption);
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>

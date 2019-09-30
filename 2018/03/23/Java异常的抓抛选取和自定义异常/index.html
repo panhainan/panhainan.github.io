@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="Java异常">
+
+
+<meta name="description" content="Java异常这是个很常用的东西，对于它的分类和处理方式我们来学习一番，特别是他的处理方式（捕获和抛出）的应用以及应用场景很重要，需要好好理解。
+内容大纲　　什么是异常　　异常的分类　　异常的处理...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    Java异常的抓抛选取和自定义异常 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:80%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Java异常的抓抛选取和自定义异常">
+            
+            Java异常的抓抛选取和自定义异常
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2018/03/23</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/Java/">Java</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/Java异常/">Java异常</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                557</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>Java异常这是个很常用的东西，对于它的分类和处理方式我们来学习一番，特别是他的处理方式（捕获和抛出）的应用以及应用场景很重要，需要好好理解。<br><a id="more"></a></p>
+<h2 id="内容大纲"><a href="#内容大纲" class="headerlink" title="内容大纲"></a><strong>内容大纲</strong></h2><p>　　什么是异常<br>　　异常的分类<br>　　异常的处理(重点)<br>　　自定义异常</p>
+<h3 id="什么是异常"><a href="#什么是异常" class="headerlink" title="什么是异常"></a><strong>什么是异常</strong></h3><p>　　在Java中，异常是指程序在运行出错时创建的一种特殊的运行时错误对象，并定义一个基类java.lang.Throwable作为所有异常的超类。</p>
+<h3 id="异常的分类"><a href="#异常的分类" class="headerlink" title="异常的分类"></a><strong>异常的分类</strong></h3><p>　　在Java API中已经定义了许多异常类（称之为预定义异常），这些类如下图，<br><img src="http://img3.baxias.tech/exception01.png" alt></p>
+<p>　　Throwable下分为Error和Exception，<br>　　　　1. Error是指不能通过程序的代码解决或者指程序自身解决不了的错误，其描述了Java运行时系统的内部错误和资源耗尽错误；<br>　　　　2. Exception是指可以通过程序的代码进行捕获来处理或者指可以通过程序自身解决的异常。</p>
+<p>　　在Exception中又分为两类：RuntimeException和其他异常，<br>　　　　1. 由程序错误导致的异常属于RuntimeException；<br>　　　　2. 程序本身没有问题，但由于像I/O错误这类问题导致的异常属于其他异常。</p>
+<p>　　一条相当有道理的规则：<strong>如果出现RuntimeException异常，那么一定是你的问题。</strong></p>
+<p>　　Java语言规范将派生于Error类和RuntimeException类的所有异常称之为未检查异常（unchecked exception），所有其他的异常称之为已检查异常（checked exception）。而Java编译器要求必须对所有已检查异常提供异常处理，否则会出现编译错误。</p>
+<blockquote>
+<p>注意：RuntimeException这个名字容易让人混淆，实际上，所有的错误都发生在运行时。————Java核心技术 卷一</p>
+</blockquote>
+<p>　　下面举一个例子，我们通过这个例子来学习异常的处理方式以及异常抓抛的应用场景。这里我们的例子可以模拟成一个web项目，client表示处理用户请求的控制器层，service为业务层，dao为数据持久层，结构如下图，</p>
+<p><img src="http://img3.baxias.tech/exception02.png" alt><br>　　代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDAO</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">strToDate</span><span class="params">(String str)</span> <span class="keyword">throws</span> ParseException </span>&#123;</span><br><span class="line">        Date date  = <span class="keyword">null</span>;</span><br><span class="line">        SimpleDateFormat simpleDateFormat = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">        date = simpleDateFormat.parse(str);</span><br><span class="line">        <span class="keyword">return</span>  date;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">strToDate</span><span class="params">(String string)</span> <span class="keyword">throws</span> ParseException </span>&#123;</span><br><span class="line">        UserDAO userDAO=<span class="keyword">new</span> UserDAO();</span><br><span class="line">        <span class="keyword">return</span> userDAO.strToDate(string);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserClient</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = Logger.getLogger(<span class="string">"UserClient"</span>);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        String str = "2018-03-23 00:30:16";</span></span><br><span class="line">        String str = <span class="string">"201803-323 00:30:16"</span>;</span><br><span class="line">        UserService userService = <span class="keyword">new</span> UserService();</span><br><span class="line">        Date date =<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            date = userService.strToDate(str);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line"><span class="comment">//            e.printStackTrace();</span></span><br><span class="line">            logger.info(e.getMessage()+<span class="string">"(字符串格式错误，无法解析!)"</span>);</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            logger.info(str+<span class="string">"-&gt;"</span>+date);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　上述的代码就表示一个用户请求服务器进行特定格式字符串转化成日期的API。</p>
+<h3 id="异常的处理"><a href="#异常的处理" class="headerlink" title="异常的处理"></a><strong>异常的处理</strong></h3><p>　　我们看UserDAO，可以看到如果去掉throws ParseException，此时simpleDateFormat.parse(str)这里就会出现编译错误，这就是前面所说的已检查异常，程序必须为其提供异常处理方式。</p>
+<p>　　异常的处理方式有两种，抓（即采用try catch finally）或者抛（即throws exception）。而UserDAO这里我们为何采用抛？并且在UserService也采用来抛，而在UserClient处又为何采用了抓？</p>
+<p>　　解答：我们是这么约定的，将异常在最初发起此请求的地方进行抓取，并对其处理，而在其他地方对其往上抛出，不进行处理。因为只有发起此请求的地方知道怎么应对出现的异常进行处理。</p>
+<blockquote>
+<p>　　举个例子，小明去银行取一个亿，银行的前台需要向上级经理请示，经理通知金库看守员取一个亿现金，看守员一看金库发现没有一个亿现金，于是这里就出问题了，小明要取十个亿，但是金库没有十个亿，这怎么办，金库看守员解决不了这个问题，就汇报给经理，金库目前没有这么多现金，这里就相当于DAO层将异常抛出给Service层，因为他解决不了这个问题，经理一看，他也搞不定啊，这一下子从哪掏出这么多钱，他就把这个问题丢给了前台，前台接到这个问题后，没办法，他得解决，他不可能把这个问题丢给小明，那样这个银行就不用开了，于是前台就去想办法，怎么解决呢，他发现以前也有这种情况，处理方式就是告诉小明，金库对于一下取一百万现金有个规定，就是先要预约，不然资金周转没有那么快，于是乎小明收到这个通知后就知道了，要预约。<br>　　这个例子就完了，可能会有疑问，说经理也可以解决这个问题啊，直接告诉小明，让小明通知顾客要预约，这样不就是Service层也可以捕获这个异常了吗？这里呢我也是有点疑惑，如果你有好的解决办法请联系我，一起探讨。</p>
+</blockquote>
+<p>　　上面这个出现的是已检查异常，必须对其进行异常处理，这里还举个未检查异常，就是经常说的除零运算，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">divide</span><span class="params">(<span class="keyword">int</span> a ,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a/b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　这个方法是可能会出现除数为零的异常的（java.lang.ArithmeticException: / by zero），但是他是RuntimeException的子类，属于未检查异常，即不必须对其进行异常处理。不过这种问题作为程序员也是必须要解决的，因为“如果出现RuntimeException异常，那么一定是你的问题。”</p>
+<h3 id="自定义异常"><a href="#自定义异常" class="headerlink" title="自定义异常"></a><strong>自定义异常</strong></h3><p>　　我们先来看一个例子，假设我们现在有个程序，要录入学生的姓名和年龄学生姓名已经录入成功，年龄等待我们录入，不过有些要求，年龄的输入限制范围是0~150，如果不在这个范围则需要重新录入。</p>
+<p>　　学生实体类代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Student&#123;"</span> +</span><br><span class="line">                <span class="string">"name='"</span> + name + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", age="</span> + age +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　学生信息录入代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Student student = <span class="keyword">new</span> Student();</span><br><span class="line">    Scanner scanner = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">    String name = <span class="string">"十六子"</span>;</span><br><span class="line">    student.setName(name);</span><br><span class="line">    System.out.println(<span class="string">"请输入年龄："</span>);</span><br><span class="line">    <span class="keyword">int</span> age = scanner.nextInt();</span><br><span class="line">    student.setAge(age);</span><br><span class="line">    System.out.println(student.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　我们现在需要将年龄录入这个地方修改以满足需求。<br>　　你可能这样操作，在<code>int age = scanner.nextInt();</code>后面加入以下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(age&gt;<span class="number">150</span> || age&lt;<span class="number">0</span>)&#123;</span><br><span class="line">    System.out.println(<span class="string">"请重新输入年龄："</span>);</span><br><span class="line">    age = scanner.nextInt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　或者说在setAge方法中进行if判断等。<br>　　但是，仔细想以下，这样的扩展性好不好，如果其他地方也要录入了呢，是不是又要这样操作一次，而如果编码人员没有注意到忘记了呢。</p>
+<p>　　有没有更好的方法？<br>　　那就是我们采用Java自定义异常来进行。<br>　　我们定义一个AgeException类，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 年龄异常类，用于判断录入年龄是否符合要求</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AgeException</span> <span class="keyword">extends</span> <span class="title">Exception</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AgeException</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　然后修改setAge方法，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> <span class="keyword">throws</span> AgeException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (age &lt; <span class="number">0</span> || age &gt; <span class="number">150</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AgeException(<span class="string">"年龄不合法，请输入0~150之间的数字！"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　然后就会发现录入年龄setAge处会提示已检查异常编译错误，需要进行异常处理，因此我们采用try catch，修改后的录入代码为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Student student = <span class="keyword">new</span> Student();</span><br><span class="line">    Scanner scanner = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">    String name = <span class="string">"十六子"</span>;</span><br><span class="line">    student.setName(name);</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        System.out.println(<span class="string">"请输入年龄："</span>);</span><br><span class="line">        <span class="keyword">int</span> age = scanner.nextInt();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            student.setAge(age);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (AgeException e) &#123;</span><br><span class="line"><span class="comment">//                e.printStackTrace();</span></span><br><span class="line">            System.out.println(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(student.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　对于异常的抓抛需要好好选取处理方式，同时在web应用中，我们也需要自定义一些异常来给予用户更好的体验。</p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2018/03/29/版本管理工具Git快速掌握推荐阅读/" class="pre-post btn btn-default" title='版本管理工具Git快速掌握推荐阅读'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            版本管理工具Git快速掌握推荐阅读</span>
+    </a>
+    
+    
+    <a href="/2018/03/22/Java使用反射和自定义注解实现简单的ORM框架映射/" class="next-post btn btn-default" title='Java使用反射和自定义注解实现简单的ORM框架映射'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            Java使用反射和自定义注解实现简单的ORM框架映射</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "sixteen-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内容大纲"><span class="toc-text">内容大纲</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是异常"><span class="toc-text">什么是异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异常的分类"><span class="toc-text">异常的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异常的处理"><span class="toc-text">异常的处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义异常"><span class="toc-text">自定义异常</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/tagcanvas.min.js?rev=2.9"></script>
+<script>
+var tagOption = {
+    textColour: '#444', // 字体颜色
+    outlineMethod: 'block', // 选中模式
+    outlineColour: '#FFDAB9', // 选中模式的颜色
+    interval: 30 || 30, // 动画帧之间的时间间隔，值越大，转动幅度越大
+    textHeight: 13,
+    outlineRadius: 3,
+    freezeActive: true || '', // 选中的标签是否继续滚动
+    frontSelect: true || '', // 不选标签云后部的标签
+    initial: [0.1, -0.1],
+    depth: 0.5,
+    decel: 0.95,
+    maxSpeed: 0.03,
+    reverse: true || '', // 是否反向触发
+    fadeIn: 500, // 进入动画时间
+    wheelZoom: false || '' // 是否启用鼠标滚轮
+}
+TagCanvas.Start('tag-cloud-3d', '', tagOption);
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>
