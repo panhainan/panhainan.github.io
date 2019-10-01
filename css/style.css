@@ -1497,7 +1497,7 @@ pre .javascript .function {
 ::-webkit-scrollbar {
   -webkit-appearance: none;
   height: 5px;
-  width: 5px;
+  width: 10px;
 }
 ::-webkit-scrollbar-track {
   background-color: inherit;
