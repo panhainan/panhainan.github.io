@@ -19,10 +19,10 @@
     <link rel="dns-prefetch" href="http://panhainan.github.io">
     <!--SEO-->
 
-<meta name="keywords" content="Docker">
+<meta name="keywords" content="IP">
 
 
-<meta name="description" content="Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中,然后发布到任何流行的 Linux 机器上,也可以实现虚拟化,容器是完全使用沙箱机制,相互之间不会...">
+<meta name="description" content="静态IP地址（又称固定IP地址）是长期分配给一台计算机或网络设备使用的 IP 地址。一般来说，一般是特殊的服务器或者采用专线上网的计算机才拥有固定的 IP 地址而且需要比较昂贵的费用。静态IP是...">
 
 
 <meta name="robots" content="all">
@@ -33,7 +33,7 @@
 
 <title>
     
-    CentOS7安装Docker |
+    CentOS7静态IP设置 |
     
     十六子
 </title>
@@ -130,9 +130,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="CentOS7安装Docker">
+        <h1 id="CentOS7静态IP设置">
             
-            CentOS7安装Docker
+            CentOS7静态IP设置
             
         </h1>
         <div class="post-meta">
@@ -140,12 +140,12 @@
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
         <span class="date-meta">
-            2019/09/30</span>
+            2019/10/01</span>
     </span>
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <a class="category-link" href="/categories/Docker/">Docker</a> <a class="category-link" href="/categories/Docker/Linux/">Linux</a>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
     </span>
     
     
@@ -153,7 +153,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            <a class="tag-link" href="/tags/Docker/">Docker</a>
+            <a class="tag-link" href="/tags/IP/">IP</a>
             
         </span>
     </span>
@@ -173,39 +173,17 @@
     </div>
     
     <div class="post-body post-content">
-        <p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中,然后发布到任何流行的 Linux 机器上,也可以实现虚拟化,容器是完全使用沙箱机制,相互之间不会有任何接口。</p>
+        <p>静态IP地址（又称固定IP地址）是长期分配给一台计算机或网络设备使用的 IP 地址。一般来说，一般是特殊的服务器或者采用专线上网的计算机才拥有固定的 IP 地址而且需要比较昂贵的费用。静态IP是二级路由必须用到的。</p>
 <a id="more"></a> 
-<h2 id="1-检查Linux内核版本"><a href="#1-检查Linux内核版本" class="headerlink" title="1. 检查Linux内核版本"></a>1. 检查Linux内核版本</h2><p>Docker 要求 CentOS 系统的内核版本高于 3.10 ，查看本页面的前提条件来验证你的CentOS 版本是否支持 Docker 。</p>
-<p>通过 <code>uname -r</code>  命令查看你当前的内核版本</p>
-<p><img src="http://img.baxias.tech/CentOS7安装Docker.assets/1569861130244.png" alt="1569861130244"></p>
-<p>使用 <code>root</code> 权限登录 。确保 <code>yum</code> 包更新到最新。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum update</span><br></pre></td></tr></table></figure>
-<h2 id="2-卸载旧版本"><a href="#2-卸载旧版本" class="headerlink" title="2. 卸载旧版本"></a>2. 卸载旧版本</h2><p><img src="http://img.baxias.tech/CentOS7安装Docker.assets/1569860889257.png" alt="1569860889257"></p>
-<p>如果已安装过，就使用以下命令删除，比如删除上图中的docker，命令为：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y remove docker-ce.x86_64</span><br></pre></td></tr></table></figure>
-<p>或者统一删除</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove docker \ docker-client \ docker-client-latest \ docker-common \ docker-latest \ docker-latest-logrotate \ docker-logrotate \ docker-selinux \ docker-engine-selinux \ docker-engine</span><br></pre></td></tr></table></figure>
-<h2 id="3-安装必要的工具"><a href="#3-安装必要的工具" class="headerlink" title="3. 安装必要的工具"></a>3. 安装必要的工具</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils device-mapper-persistent-data lvm2</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>yum-util 提供 yum-config-manager 功能，另外两个是 devicemapper 驱动依赖的</p>
-</blockquote>
-<h2 id="4-设置yum源"><a href="#4-设置yum源" class="headerlink" title="4. 设置yum源"></a>4. 设置yum源</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.baxias.tech/CentOS7安装Docker.assets/1569861770619.png" alt="1569861770619"></p>
-<h2 id="5-查看仓库中所有的Docker版本"><a href="#5-查看仓库中所有的Docker版本" class="headerlink" title="5. 查看仓库中所有的Docker版本"></a>5. 查看仓库中所有的Docker版本</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list docker-ce --showduplicates | sort -r</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.baxias.tech/CentOS7安装Docker.assets/1569861761133.png" alt="1569861761133"></p>
-<h2 id="6-安装Docker"><a href="#6-安装Docker" class="headerlink" title="6. 安装Docker"></a>6. 安装Docker</h2><p>选择特定版本，比如我选择的是<code>docker-ce-17.12.0.ce</code>版本</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install docker-ce-17.12.0.ce</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.baxias.tech/CentOS7安装Docker.assets/1569861748085.png" alt="1569861748085"></p>
-<h2 id="7-验证是否安装完毕"><a href="#7-验证是否安装完毕" class="headerlink" title="7. 验证是否安装完毕"></a>7. 验证是否安装完毕</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.baxias.tech/CentOS7安装Docker.assets/1569861738757.png" alt="1569861738757"></p>
-<h2 id="8-开启开机自启"><a href="#8-开启开机自启" class="headerlink" title="8. 开启开机自启"></a>8. 开启开机自启</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl enable docker</span><br></pre></td></tr></table></figure>
-<h2 id="9-安装常见问题"><a href="#9-安装常见问题" class="headerlink" title="9. 安装常见问题"></a>9. 安装常见问题</h2><p>若出现如下类似问题，就是表明系统中存在旧版本的Docker，与正在安装的版本产生冲突，需要卸载删除旧版本后才能继续安装。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Transaction check error:</span><br><span class="line">  file /usr/bin/docker from install of docker-ce-17.12.0.ce-1.el7.centos.x86_64 conflicts with file from package docker-common-...</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
-<p>卸载操作可以采用上述第2步的操作，或者使用一下命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum erase docker-common-...</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>注意 docker-common-… 为错误日志中出现的版本号</p>
-</blockquote>
+<h2 id="1-确定网卡名字"><a href="#1-确定网卡名字" class="headerlink" title="1. 确定网卡名字"></a>1. 确定网卡名字</h2><p><img src="http://img.baxias.tech/CentOS7静态IP设置.assets/1569907342466.png" alt="1569907342466"></p>
+<p>我的网卡名字为 <code>ifcfg-ens33</code></p>
+<h2 id="2-查看网卡信息"><a href="#2-查看网卡信息" class="headerlink" title="2. 查看网卡信息"></a>2. 查看网卡信息</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.baxias.tech/CentOS7静态IP设置.assets/1569907498636.png" alt="1569907498636"></p>
+<p>网卡信息说明，上图中我已经配置为静态IP，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet                # 网卡类型：为以太网</span><br><span class="line">PROXY_METHOD=none            # 代理方式：关闭状态</span><br><span class="line">BROWSER_ONLY=no              # 只是浏览器：否</span><br><span class="line">BOOTPROTO=dhcp               # 网卡的引导协议：DHCP[中文名称: 动态主机配置协议]</span><br><span class="line">DEFROUTE=yes                 # 默认路由：是, 不明白的可以百度关键词 `默认路由` </span><br><span class="line">IPV4_FAILURE_FATAL=no        # 是不开启IPV4致命错误检测：否</span><br><span class="line">IPV6INIT=yes                 # IPV6是否自动初始化: 是[不会有任何影响, 现在还没用到IPV6]</span><br><span class="line">IPV6_AUTOCONF=yes            # IPV6是否自动配置：是[不会有任何影响, 现在还没用到IPV6]</span><br><span class="line">IPV6_DEFROUTE=yes            # IPV6是否可以为默认路由：是[不会有任何影响, 现在还没用到IPV6]</span><br><span class="line">IPV6_FAILURE_FATAL=no        # 是不开启IPV6致命错误检测：否</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy            # IPV6地址生成模型：stable-privacy [这只一种生成IPV6的策略]</span><br><span class="line">NAME=ens33                    # 网卡物理设备名称</span><br><span class="line">UUID=f47bde51-fa78-4f79-b68f-d5dd90cfc698    # 通用唯一识别码, 每一个网卡都会有, 不能重复, 否两台linux只有一台网卡可用</span><br><span class="line">DEVICE=ens33                  # 网卡设备名称, 必须和 `NAME` 值一样</span><br><span class="line">ONBOOT=no                     # 是否开机启动， 要想网卡开机就启动或通过 `systemctl restart network`控制网卡,必须设置为 `yes`</span><br></pre></td></tr></table></figure>
+<h2 id="3-配置网卡为静态IP"><a href="#3-配置网卡为静态IP" class="headerlink" title="3. 配置网卡为静态IP"></a>3. 配置网卡为静态IP</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.baxias.tech/CentOS7静态IP设置.assets/1569907706138.png" alt="1569907706138"></p>
+<h2 id="4-重启网卡"><a href="#4-重启网卡" class="headerlink" title="4. 重启网卡"></a>4. 重启网卡</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart network</span><br></pre></td></tr></table></figure>
 
     </div>
     
@@ -244,17 +222,11 @@
 </article>
 <div class="article-nav prev-next-wrap clearfix">
     
-    <a href="/2019/10/01/CentOS7静态IP设置/" class="pre-post btn btn-default" title='CentOS7静态IP设置'>
-        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
-        <span class="hidden-xs">
-            CentOS7静态IP设置</span>
-    </a>
     
-    
-    <a href="/2019/09/30/CentOS7防火墙操作/" class="next-post btn btn-default" title='CentOS7防火墙相关操作命令'>
+    <a href="/2019/09/30/CentOS7安装Docker/" class="next-post btn btn-default" title='CentOS7安装Docker'>
         <span class="hidden-lg">下一篇</span>
         <span class="hidden-xs">
-            CentOS7防火墙相关操作命令</span><i class="fa fa-angle-right fa-fw"></i>
+            CentOS7安装Docker</span><i class="fa fa-angle-right fa-fw"></i>
     </a>
     
 </div>
@@ -291,7 +263,7 @@ gitalk.render('gitalk-container');
             文章目录
         </h3>
         
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-检查Linux内核版本"><span class="toc-text">1. 检查Linux内核版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-卸载旧版本"><span class="toc-text">2. 卸载旧版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-安装必要的工具"><span class="toc-text">3. 安装必要的工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-设置yum源"><span class="toc-text">4. 设置yum源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-查看仓库中所有的Docker版本"><span class="toc-text">5. 查看仓库中所有的Docker版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-安装Docker"><span class="toc-text">6. 安装Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-验证是否安装完毕"><span class="toc-text">7. 验证是否安装完毕</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-开启开机自启"><span class="toc-text">8. 开启开机自启</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-安装常见问题"><span class="toc-text">9. 安装常见问题</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-确定网卡名字"><span class="toc-text">1. 确定网卡名字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-查看网卡信息"><span class="toc-text">2. 查看网卡信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-配置网卡为静态IP"><span class="toc-text">3. 配置网卡为静态IP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-重启网卡"><span class="toc-text">4. 重启网卡</span></a></li></ol>
         
     </div>
 </aside>
