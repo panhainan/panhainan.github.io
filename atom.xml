@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://panhainan.github.io/"/>
-  <updated>2019-10-01T05:34:18.773Z</updated>
+  <updated>2019-10-01T05:57:47.374Z</updated>
   <id>http://panhainan.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://panhainan.github.io/2019/10/01/CentOS7%E9%9D%99%E6%80%81IP%E8%AE%BE%E7%BD%AE/"/>
     <id>http://panhainan.github.io/2019/10/01/CentOS7静态IP设置/</id>
     <published>2019-10-01T05:00:00.000Z</published>
-    <updated>2019-10-01T05:34:18.773Z</updated>
+    <updated>2019-10-01T05:57:47.374Z</updated>
     
     <content type="html"><![CDATA[<p>静态IP地址（又称固定IP地址）是长期分配给一台计算机或网络设备使用的 IP 地址。一般来说，一般是特殊的服务器或者采用专线上网的计算机才拥有固定的 IP 地址而且需要比较昂贵的费用。静态IP是二级路由必须用到的。</p><a id="more"></a> <h2 id="1-确定网卡名字"><a href="#1-确定网卡名字" class="headerlink" title="1. 确定网卡名字"></a>1. 确定网卡名字</h2><p><img src="http://img.baxias.tech/CentOS7静态IP设置.assets/1569907342466.png" alt="1569907342466"></p><p>我的网卡名字为 <code>ifcfg-ens33</code></p><h2 id="2-查看网卡信息"><a href="#2-查看网卡信息" class="headerlink" title="2. 查看网卡信息"></a>2. 查看网卡信息</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure><p><img src="http://img.baxias.tech/CentOS7静态IP设置.assets/1569907498636.png" alt="1569907498636"></p><p>网卡信息说明，上图中我已经配置为静态IP，</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet                # 网卡类型：为以太网</span><br><span class="line">PROXY_METHOD=none            # 代理方式：关闭状态</span><br><span class="line">BROWSER_ONLY=no              # 只是浏览器：否</span><br><span class="line">BOOTPROTO=dhcp               # 网卡的引导协议：DHCP[中文名称: 动态主机配置协议]</span><br><span class="line">DEFROUTE=yes                 # 默认路由：是, 不明白的可以百度关键词 `默认路由` </span><br><span class="line">IPV4_FAILURE_FATAL=no        # 是不开启IPV4致命错误检测：否</span><br><span class="line">IPV6INIT=yes                 # IPV6是否自动初始化: 是[不会有任何影响, 现在还没用到IPV6]</span><br><span class="line">IPV6_AUTOCONF=yes            # IPV6是否自动配置：是[不会有任何影响, 现在还没用到IPV6]</span><br><span class="line">IPV6_DEFROUTE=yes            # IPV6是否可以为默认路由：是[不会有任何影响, 现在还没用到IPV6]</span><br><span class="line">IPV6_FAILURE_FATAL=no        # 是不开启IPV6致命错误检测：否</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy            # IPV6地址生成模型：stable-privacy [这只一种生成IPV6的策略]</span><br><span class="line">NAME=ens33                    # 网卡物理设备名称</span><br><span class="line">UUID=f47bde51-fa78-4f79-b68f-d5dd90cfc698    # 通用唯一识别码, 每一个网卡都会有, 不能重复, 否两台linux只有一台网卡可用</span><br><span class="line">DEVICE=ens33                  # 网卡设备名称, 必须和 `NAME` 值一样</span><br><span class="line">ONBOOT=no                     # 是否开机启动， 要想网卡开机就启动或通过 `systemctl restart network`控制网卡,必须设置为 `yes`</span><br></pre></td></tr></table></figure><h2 id="3-配置网卡为静态IP"><a href="#3-配置网卡为静态IP" class="headerlink" title="3. 配置网卡为静态IP"></a>3. 配置网卡为静态IP</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure><p><img src="http://img.baxias.tech/CentOS7静态IP设置.assets/1569907706138.png" alt="1569907706138"></p><h2 id="4-重启网卡"><a href="#4-重启网卡" class="headerlink" title="4. 重启网卡"></a>4. 重启网卡</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart network</span><br></pre></td></tr></table></figure>]]></content>
     
@@ -314,9 +314,9 @@
     
       <category term="SpringMVC" scheme="http://panhainan.github.io/tags/SpringMVC/"/>
     
-      <category term="日期数据绑定" scheme="http://panhainan.github.io/tags/%E6%97%A5%E6%9C%9F%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/"/>
-    
       <category term="数据绑定" scheme="http://panhainan.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/"/>
+    
+      <category term="日期数据绑定" scheme="http://panhainan.github.io/tags/%E6%97%A5%E6%9C%9F%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A/"/>
     
   </entry>
   
