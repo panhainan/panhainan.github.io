@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="Nexus">
+
+
+<meta name="description" content="在远程仓库中，默认的是中央仓库，中央仓库是Maven核心自带的远程仓库。 Nexus是一种私有的远程仓库。
+ 
+1. 安装NexusNexus是典型的Java Web应用，它有两种安装包，一种是...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    搭建Maven私服-Nexus |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:95%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="搭建Maven私服-Nexus">
+            
+            搭建Maven私服-Nexus
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2018/12/12</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/Maven/">Maven</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/Nexus/">Nexus</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                311</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>在远程仓库中，默认的是中央仓库，中央仓库是Maven核心自带的远程仓库。 Nexus是一种私有的远程仓库。</p>
+<a id="more"></a> 
+<h2 id="1-安装Nexus"><a href="#1-安装Nexus" class="headerlink" title="1. 安装Nexus"></a>1. 安装Nexus</h2><p>Nexus是典型的Java Web应用，它有两种安装包，一种是包含Jetty容器的Bundle包，另一种是不包含Web容器的war包。</p>
+<h3 id="1）下载Nexus"><a href="#1）下载Nexus" class="headerlink" title="1）下载Nexus"></a>1）下载Nexus</h3><p>读者可以从官网<a href="http://www.sonatype.org/nexus/" target="_blank" rel="noopener">http://www.sonatype.org/nexus/</a> 下载最新的Nexus</p>
+<h3 id="2）Bundle方式安装Nexus"><a href="#2）Bundle方式安装Nexus" class="headerlink" title="2）Bundle方式安装Nexus"></a>2）Bundle方式安装Nexus</h3><p>a. 首先看下解压后的目录，结构：</p>
+<p>nexus-2.6.2-01: 该目录包含了Nexus运行所需要的文件，如启动脚本、依赖jar包等。<br>sonatype-work：该目录包含Nenus生成的配置文件、日志文件、仓库文件等。<br>其中第一个目录是运行Nexus必须的，而第二个不是必须的，Nexus会在运行的时候动态创建该目录。</p>
+<p><img src="http://img.baxias.tech/20191019/1571467930485.png" alt="1571467930485"></p>
+<p>b. 配置Path，启动Nexus<br>首先在环境变量path下加入如下地址：D:\j2ee\nexus-2.6.2-01-bundle\nexus-2.6.2-01\bin；之后在cmd下启动Nexus服务：</p>
+<p>如果看到以上输出，就说明启动成功了。这时打开浏览器访问：<a href="http://localhost:8081/nexus" target="_blank" rel="noopener">http://localhost:8081/nexus</a> 就可以看到Nexus的界面了，如下图：</p>
+<p>!<img src="http://img.baxias.tech/20191019/1571467953312.png" alt="1571467953312"></p>
+<p><img src="http://img.baxias.tech/20191019/1571467968533.png" alt="1571467968533"></p>
+<p>这时你可以单击界面右上角的Login进行登录，Nexus默认管理用户名和密码为admin/admin123。</p>
+<h2 id="2-Nexus的索引"><a href="#2-Nexus的索引" class="headerlink" title="2. Nexus的索引"></a>2. Nexus的索引</h2><p>这时你使用Nexus搜索插件得不到任何结果，为了能够搜索Maven中央库，首先需要设置Nexus中的Maven Central仓库下载远程索引。如下图：</p>
+<p><img src="http://img.baxias.tech/20191019/1571467976405.png" alt="1571467976405"></p>
+<p>单击左边导航栏的Repositories，可以link到这个页面，选择Central，点击Configuration，里面有一个Download Remote Indexes配置，默认状态是false，将其改为true，‘Save’后，单击Administration==&gt; Scheduled Tasks, 就有一条更新Index的任务，这个是Nexus在后天运行了一个任务来下载中央仓库的索引。由于中央仓库的内容比较多，因此其索引文件比较大，Nexus下载该文件也需要比较长的时间。请读者耐心等待把。如果网速不好的话，可以使用其他人搭建好的的Nexus私服。后面会介绍。下图为Nexus后台运行的task图：</p>
+<p><img src="http://img.baxias.tech/20191019/1571468014872.png" alt="1571468014872"></p>
+<h2 id="3-配置Maven从Nexus下载构件"><a href="#3-配置Maven从Nexus下载构件" class="headerlink" title="3. 配置Maven从Nexus下载构件"></a>3. 配置Maven从Nexus下载构件</h2><h3 id="1）在POM中配置Nexus私服"><a href="#1）在POM中配置Nexus私服" class="headerlink" title="1）在POM中配置Nexus私服"></a>1）在POM中配置Nexus私服</h3><p>这样的配置只对当前的Maven项目有效。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;repositories&gt;</span><br><span class="line">    &lt;repository&gt;</span><br><span class="line">        &lt;id&gt;nexus&lt;/id&gt;</span><br><span class="line">        &lt;name&gt;Nexus Repository&lt;/name&gt;</span><br><span class="line">        &lt;url&gt;http://localhost:8081/nexus/content/groups/public/&lt;/url&gt;</span><br><span class="line">        &lt;releases&gt;</span><br><span class="line">            &lt;enabled&gt;true&lt;/enabled&gt;</span><br><span class="line">        &lt;/releases&gt;</span><br><span class="line">        &lt;snapshots&gt;</span><br><span class="line">            &lt;enabled&gt;true&lt;/enabled&gt;</span><br><span class="line">        &lt;/snapshots&gt;</span><br><span class="line">    &lt;/repository&gt;</span><br><span class="line">&lt;/repositories&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="2）在settings-xml中配置profile元素"><a href="#2）在settings-xml中配置profile元素" class="headerlink" title="2）在settings.xml中配置profile元素"></a>2）在settings.xml中配置profile元素</h3><p>这样就能让本机所有的Maven项目都使用自己的Maven私服。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">    &lt;mirror&gt;</span><br><span class="line">        &lt;id&gt;central&lt;/id&gt;</span><br><span class="line">        &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;</span><br><span class="line">        &lt;name&gt;Human Readable Name for this Mirror.&lt;/name&gt;</span><br><span class="line">        &lt;url&gt;http://localhost:8081/nexus/content/groups/public/&lt;/url&gt;</span><br><span class="line">    &lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;&lt;profiles&gt;</span><br><span class="line">&lt;profile&gt;</span><br><span class="line">    &lt;id&gt;nexus&lt;/id&gt;</span><br><span class="line">    &lt;repositories&gt;</span><br><span class="line">        &lt;repository&gt;</span><br><span class="line">            &lt;id&gt;nexus&lt;/id&gt;</span><br><span class="line">            &lt;name&gt;Nexus&lt;/name&gt;</span><br><span class="line">            &lt;url&gt;http://localhost:8081/nexus/content/groups/public/&lt;/url&gt;</span><br><span class="line">            &lt;releases&gt;</span><br><span class="line">                &lt;enabled&gt;true&lt;/enabled&gt;</span><br><span class="line">            &lt;/releases&gt;</span><br><span class="line">            &lt;snapshots&gt;</span><br><span class="line">                &lt;enabled&gt;true&lt;/enabled&gt;</span><br><span class="line">            &lt;/snapshots&gt;</span><br><span class="line">        &lt;/repository&gt;</span><br><span class="line">    &lt;/repositories&gt;</span><br><span class="line">&lt;/profile&gt;</span><br><span class="line">&lt;/profiles&gt;</span><br></pre></td></tr></table></figure>
+<p>以上配置所有Maven下载请求都仅仅通过Nexus，以全面发挥私服的作用。</p>
+<h2 id="4-部署构件到Nexus"><a href="#4-部署构件到Nexus" class="headerlink" title="4. 部署构件到Nexus"></a>4. 部署构件到Nexus</h2><h3 id="1）在POM中配置"><a href="#1）在POM中配置" class="headerlink" title="1）在POM中配置"></a>1）在POM中配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;distributionManagement&gt;</span><br><span class="line">        &lt;snapshotRepository&gt;</span><br><span class="line">            &lt;id&gt;user-snapshots&lt;/id&gt;</span><br><span class="line">            &lt;name&gt;User Project SNAPSHOTS&lt;/name&gt;</span><br><span class="line">            &lt;url&gt;http://localhost:8081/nexus/content/repositories/MyUserReposSnapshots/&lt;/url&gt;</span><br><span class="line">        &lt;/snapshotRepository&gt;</span><br><span class="line">        &lt;repository&gt;</span><br><span class="line">            &lt;id&gt;user-releases&lt;/id&gt;</span><br><span class="line">            &lt;name&gt;User Project Release&lt;/name&gt;</span><br><span class="line">            &lt;url&gt;http://localhost:8081/nexus/content/repositories/MyUserReposRelease/&lt;/url&gt;</span><br><span class="line">        &lt;/repository&gt;</span><br><span class="line">    &lt;/distributionManagement&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="2）settings-xml中配置认证信息"><a href="#2）settings-xml中配置认证信息" class="headerlink" title="2）settings.xml中配置认证信息"></a>2）settings.xml中配置认证信息</h3><p>Nexus的仓库对于匿名用户是只读的。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;servers&gt;</span><br><span class="line"> &lt;server&gt;</span><br><span class="line"> &lt;id&gt;user-snapshots&lt;/id&gt;</span><br><span class="line"> &lt;username&gt;lb&lt;/username&gt;</span><br><span class="line"> &lt;password&gt;123456&lt;/password&gt;</span><br><span class="line"> &lt;/server&gt;</span><br><span class="line"> &lt;server&gt;</span><br><span class="line"> &lt;id&gt;user-releases&lt;/id&gt;</span><br><span class="line"> &lt;username&gt;lb&lt;/username&gt;</span><br><span class="line"> &lt;password&gt;123456&lt;/password&gt;</span><br><span class="line"> &lt;/server&gt;</span><br><span class="line">&lt;/servers&gt;</span><br></pre></td></tr></table></figure>
+<p>最后，如果不想自己构建Nexus私服，或者更新Index很慢的话，可以使用OSChina搭建的Nexus私服，地址如下：<a href="http://maven.oschina.net/index.html，如下图：![1571468033280](http://img.baxias.tech/20191019/1571468033280.png)" target="_blank" rel="noopener">http://maven.oschina.net/index.html，如下图：![1571468033280](http://img.baxias.tech/20191019/1571468033280.png)</a></p>
+<p>建议大家可以在浏览器中收藏这个网站，平时也可以用来查看一下一些构件的依赖，如上图的右下角显示的。</p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2019/09/30/CentOS7防火墙操作/" class="pre-post btn btn-default" title='CentOS7防火墙相关操作命令'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            CentOS7防火墙相关操作命令</span>
+    </a>
+    
+    
+    <a href="/2018/12/12/日期工具类SimpleDateFormat的正确使用/" class="next-post btn btn-default" title='日期工具类SimpleDateFormat的正确使用'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            日期工具类SimpleDateFormat的正确使用</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "blog-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-安装Nexus"><span class="toc-text">1. 安装Nexus</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）下载Nexus"><span class="toc-text">1）下载Nexus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2）Bundle方式安装Nexus"><span class="toc-text">2）Bundle方式安装Nexus</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Nexus的索引"><span class="toc-text">2. Nexus的索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-配置Maven从Nexus下载构件"><span class="toc-text">3. 配置Maven从Nexus下载构件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）在POM中配置Nexus私服"><span class="toc-text">1）在POM中配置Nexus私服</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2）在settings-xml中配置profile元素"><span class="toc-text">2）在settings.xml中配置profile元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-部署构件到Nexus"><span class="toc-text">4. 部署构件到Nexus</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）在POM中配置"><span class="toc-text">1）在POM中配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2）settings-xml中配置认证信息"><span class="toc-text">2）settings.xml中配置认证信息</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>
