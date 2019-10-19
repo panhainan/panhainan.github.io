@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="DateFormat">
+
+
+<meta name="description" content="对于SimpleDateFormat类，想必大家肯定不陌生，我们常用它来处理日期的格式化或者日期字符串的解析。但是如果不正确使用好SimpleDateFormat是会出现问题的，本文就围绕用法和...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    日期工具类SimpleDateFormat的正确使用 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:95%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="日期工具类SimpleDateFormat的正确使用">
+            
+            日期工具类SimpleDateFormat的正确使用
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2018/12/12</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/Java/">Java</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/DateFormat/">DateFormat</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+        <p class="fa fa-exclamation-triangle warning">
+            本文于<strong>
+                311</strong>
+            天之前发表，文中内容可能已经过时。
+        </p>
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>对于SimpleDateFormat类，想必大家肯定不陌生，我们常用它来处理日期的格式化或者日期字符串的解析。但是如果不正确使用好SimpleDateFormat是会出现问题的，本文就围绕用法和原理来分析下SimpleDateFormat类。</p>
+<a id="more"></a> 
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>我们看看Java8对于SimpleDateFormat的定义：</p>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleDateFormat</span> <span class="keyword">extends</span> <span class="title">DateFormat</span></span></span><br></pre></td></tr></table></figure>
+<p>SimpleDateFormat is a concrete class for formatting and parsing dates in a locale-sensitive manner. It allows for formatting (date → text), parsing (text → date), and normalization.</p>
+<p>大致意思就是：该类是一个可以根据语言环境来格式化和解析日期的具体的类，它允许将日期格式化为自定义格式的文本、将字符串形式的日期解析为日期、以及规范化日期。</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><h3 id="日期和时间的模式表达"><a href="#日期和时间的模式表达" class="headerlink" title="日期和时间的模式表达"></a>日期和时间的模式表达</h3><p>如官网描述，常用的时间元素和字母的对应表如下：<img src="http://img.baxias.tech/日期工具类SimpleDateFormat的正确使用.assets/1571465046429.png" alt="1571465046429"></p>
+<p><img src="http://img.baxias.tech/日期工具类SimpleDateFormat的正确使用.assets/1571465054582.png" alt="1571465054582"></p>
+<h3 id="date-→-text"><a href="#date-→-text" class="headerlink" title="date → text"></a>date → text</h3><p>将日期格式化为用户自定义格式的字符串：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SimpleDateFormat simpleDateFormat = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy/MM/dd HH:mm:ss"</span>);</span><br><span class="line">Date date = <span class="keyword">new</span> Date();</span><br><span class="line">System.out.println(simpleDateFormat.format(date));</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<blockquote>
+<p>2018/12/11 20:50:25</p>
+</blockquote>
+<h3 id="text-→-date"><a href="#text-→-date" class="headerlink" title="text → date"></a>text → date</h3><p>将日期格式的字符串解析为日期：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SimpleDateFormat simpleDateFormat = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy/MM/dd HH:mm:ss"</span>);</span><br><span class="line">String dateStr = <span class="string">"2018/12/12 00:47:40"</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Date result = simpleDateFormat.parse(dateStr);</span><br><span class="line">    System.out.println(result);</span><br><span class="line">&#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<blockquote>
+<p>Wed Dec 12 00:47:40 CST 2018</p>
+</blockquote>
+<h3 id="关于时区"><a href="#关于时区" class="headerlink" title="关于时区"></a>关于时区</h3><p>SimpleDateFormat 类存在一个设置时区的方法，即 setTimeZone，比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sdf.setTimeZone(TimeZone.getTimeZone(<span class="string">"Asia/Shanghai"</span>));</span><br></pre></td></tr></table></figure>
+<p>对于时区的字符串名字，可以在ZoneId类中找到相关时区名字的字符串。</p>
+<p>默认情况下，在创建日期的时候若不指明时区，会使用当前计算机所在的时区作为默认时区。</p>
+<h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><p>官方文档在最后写到了：</p>
+<p>Date formats are <strong>not synchronized</strong>. It is recommended to create separate format instances for each thread. If multiple threads access a format concurrently, it must be synchronized externally.</p>
+<p>该类没有同步，建议针对每一个线程创建一个格式化的实例。如果要进行多个线程使用一个格式化实例，那么必须在外部保证同步，以此来实现线程安全。</p>
+<p>同样，在阿里巴巴开发手册中，对于SimpleDateFormat的使用给出了明确的规定：</p>
+<p><img src="http://img.baxias.tech/日期工具类SimpleDateFormat的正确使用.assets/1571465071839.png" alt="1571465071839"></p>
+<h3 id="线程不安全示例"><a href="#线程不安全示例" class="headerlink" title="线程不安全示例"></a>线程不安全示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleDateFormatTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义一个全局的SimpleDateFormat</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SimpleDateFormat simpleDateFormat = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ExecutorService pool = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">200</span>,</span><br><span class="line">            <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">            <span class="keyword">new</span> LinkedBlockingQueue&lt;&gt;(<span class="number">1024</span>), Thread::<span class="keyword">new</span>, <span class="keyword">new</span> ThreadPoolExecutor.AbortPolicy());</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义一个CountDownLatch，保证所有子线程执行完之后主线程再执行</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> CountDownLatch countDownLatch = <span class="keyword">new</span> CountDownLatch(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">//定义一个线程安全的HashSet</span></span><br><span class="line">        Set&lt;String&gt; dates = Collections.synchronizedSet(<span class="keyword">new</span> HashSet&lt;String&gt;());</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">            <span class="comment">//获取当前时间</span></span><br><span class="line">            Calendar calendar = Calendar.getInstance();</span><br><span class="line">            <span class="keyword">int</span> finalI = i;</span><br><span class="line">            pool.execute(() -&gt; &#123;</span><br><span class="line">                <span class="comment">//时间增加</span></span><br><span class="line">                calendar.add(Calendar.DATE, finalI);</span><br><span class="line">                <span class="comment">//通过simpleDateFormat把时间转换成字符串</span></span><br><span class="line">                String dateString = simpleDateFormat.format(calendar.getTime());</span><br><span class="line">                <span class="comment">//把字符串放入Set中</span></span><br><span class="line">                dates.add(dateString);</span><br><span class="line">                <span class="comment">//countDown</span></span><br><span class="line">                countDownLatch.countDown();</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//阻塞，直到countDown数量为0</span></span><br><span class="line">        countDownLatch.await();</span><br><span class="line">        <span class="comment">//输出去重后的时间个数</span></span><br><span class="line">        System.out.println(dates.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码解释：循环一百次，每次循环都在当前时间的基础上加上一个天数（循环的第几次），然后把所有的日期放入一个线程安全的带有去重功能的set中，然后输出set中的元素个数。</p>
+<p>例子出处： <a href="https://mp.weixin.qq.com/s/i2t0uYxbVeqRKGTc6qurag" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/i2t0uYxbVeqRKGTc6qurag</a> （作者：Hollis ）</p>
+<p>我们想象中的结果应该是100，但是实际执行过程中，会出现线程不安全的情况，这样就会导致实际结果是一个小于100的数字。</p>
+<p>为什么呢？</p>
+<h3 id="线程不安全原因"><a href="#线程不安全原因" class="headerlink" title="线程不安全原因"></a>线程不安全原因</h3><p>我们看看SimpleDateFormat的源码实现，看看format方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Called from Format after creating a FieldDelegate</span></span><br><span class="line">   <span class="function"><span class="keyword">private</span> StringBuffer <span class="title">format</span><span class="params">(Date date, StringBuffer toAppendTo,</span></span></span><br><span class="line"><span class="function"><span class="params">                               FieldDelegate delegate)</span> </span>&#123;</span><br><span class="line">       <span class="comment">// Convert input date to time field list</span></span><br><span class="line">       calendar.setTime(date);</span><br><span class="line"></span><br><span class="line">       <span class="keyword">boolean</span> useDateFormatSymbols = useDateFormatSymbols();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; compiledPattern.length; ) &#123;</span><br><span class="line">           <span class="keyword">int</span> tag = compiledPattern[i] &gt;&gt;&gt; <span class="number">8</span>;</span><br><span class="line">           <span class="keyword">int</span> count = compiledPattern[i++] &amp; <span class="number">0xff</span>;</span><br><span class="line">           <span class="keyword">if</span> (count == <span class="number">255</span>) &#123;</span><br><span class="line">               count = compiledPattern[i++] &lt;&lt; <span class="number">16</span>;</span><br><span class="line">               count |= compiledPattern[i++];</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">switch</span> (tag) &#123;</span><br><span class="line">           <span class="keyword">case</span> TAG_QUOTE_ASCII_CHAR:</span><br><span class="line">               toAppendTo.append((<span class="keyword">char</span>)count);</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">case</span> TAG_QUOTE_CHARS:</span><br><span class="line">               toAppendTo.append(compiledPattern, i, count);</span><br><span class="line">               i += count;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">default</span>:</span><br><span class="line">               subFormat(tag, count, delegate, toAppendTo, useDateFormatSymbols);</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> toAppendTo;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>注意源码中的这一行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">calendar.setTime(date);</span><br></pre></td></tr></table></figure>
+<p>我们看看<code>calendar</code>来自哪里？它来自父类DateFormat，是一个成员变量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * The &#123;<span class="doctag">@link</span> Calendar&#125; instance used for calculating the date-time fields</span></span><br><span class="line"><span class="comment">    * and the instant of time. This field is used for both formatting and</span></span><br><span class="line"><span class="comment">    * parsing.</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * &lt;p&gt;Subclasses should initialize this field to a &#123;<span class="doctag">@link</span> Calendar&#125;</span></span><br><span class="line"><span class="comment">    * appropriate for the &#123;<span class="doctag">@link</span> Locale&#125; associated with this</span></span><br><span class="line"><span class="comment">    * &lt;code&gt;DateFormat&lt;/code&gt;.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@serial</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">protected</span> Calendar calendar;</span><br></pre></td></tr></table></figure>
+<p>由于我们在使用SimpleDateFormat的时候，使用了static定义，这样SimpleDateFormat就是一个多个线程共享的共享变量，那么其成员变量calendar也就可以被多个线程访问到了，到此大家应该就知道为什么SimpleDateFormat的format方法为什么不安全了吧。</p>
+<p>同样，对于该来的parse方法，也存在同样的问题，我们可以在parse方法中调用的subParse方法中看到calendar变量的使用。</p>
+<h2 id="如何解决线程不安全问题"><a href="#如何解决线程不安全问题" class="headerlink" title="如何解决线程不安全问题"></a>如何解决线程不安全问题</h2><h3 id="使用局部变量"><a href="#使用局部变量" class="headerlink" title="使用局部变量"></a>使用局部变量</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SimpleDateFormat声明成局部变量</span></span><br><span class="line">SimpleDateFormat simpleDateFormat = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line"><span class="comment">//通过simpleDateFormat把时间转换成字符串</span></span><br><span class="line">String dateString = simpleDateFormat.format(<span class="keyword">new</span> Date());</span><br></pre></td></tr></table></figure>
+<p>SimpleDateFormat变成了局部变量，就不会被多个线程同时访问到了，就避免了线程安全问题。</p>
+<h3 id="加同步锁"><a href="#加同步锁" class="headerlink" title="加同步锁"></a>加同步锁</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> SimpleDateFormat simpleDateFormat = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="keyword">synchronized</span> (simpleDateFormat) &#123;</span><br><span class="line"> String dateString = simpleDateFormat.format(<span class="keyword">new</span> Date());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过加锁，使多个线程排队顺序执行。避免了并发导致的线程安全问题。</p>
+<h3 id="使用ThreadLocal"><a href="#使用ThreadLocal" class="headerlink" title="使用ThreadLocal"></a>使用ThreadLocal</h3><p>ThreadLocal 可以确保每个线程都可以得到单独的一个 SimpleDateFormat 的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 使用ThreadLocal定义一个全局的SimpleDateFormat</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ThreadLocal&lt;SimpleDateFormat&gt; simpleDateFormatThreadLocal = <span class="keyword">new</span> ThreadLocal&lt;SimpleDateFormat&gt;() &#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> SimpleDateFormat <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用法</span></span><br><span class="line">String dateString = simpleDateFormatThreadLocal.get().format(<span class="keyword">new</span> Date());</span><br></pre></td></tr></table></figure>
+<h3 id="使用其他类库的格式化类"><a href="#使用其他类库的格式化类" class="headerlink" title="使用其他类库的格式化类"></a>使用其他类库的格式化类</h3><ul>
+<li><p>Apache commons的FastDateFormat，宣称是既快又线程安全的SimpleDateFormat, 可惜它只能对日期进行format, 不能对日期串进行解析。</p>
+</li>
+<li><p>Joda-Time类库</p>
+</li>
+</ul>
+<p>对于上述方法，大家可以根据实际情况来选择。</p>
+<p>从简单的角度来说，建议使用方法一或者方法二，如果在必要的时候，追求那么一点性能提升的话，可以考虑用方法三，用ThreadLocal做缓存。</p>
+<p>据说Joda-Time类库对时间处理方式比较完美，建议使用（这个后续继续学习）。</p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    <a href="/2019/09/30/CentOS7防火墙操作/" class="pre-post btn btn-default" title='CentOS7防火墙相关操作命令'>
+        <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+        <span class="hidden-xs">
+            CentOS7防火墙相关操作命令</span>
+    </a>
+    
+    
+    <a href="/2018/08/26/《程序员代码面试指南》用一个辅助栈实现另一个栈的排序/" class="next-post btn btn-default" title='《程序员代码面试指南》用一个辅助栈实现另一个栈的排序'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            《程序员代码面试指南》用一个辅助栈实现另一个栈的排序</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "blog-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用法"><span class="toc-text">用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#日期和时间的模式表达"><span class="toc-text">日期和时间的模式表达</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#date-→-text"><span class="toc-text">date → text</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#text-→-date"><span class="toc-text">text → date</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于时区"><span class="toc-text">关于时区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程安全性"><span class="toc-text">线程安全性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线程不安全示例"><span class="toc-text">线程不安全示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程不安全原因"><span class="toc-text">线程不安全原因</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何解决线程不安全问题"><span class="toc-text">如何解决线程不安全问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用局部变量"><span class="toc-text">使用局部变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加同步锁"><span class="toc-text">加同步锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用ThreadLocal"><span class="toc-text">使用ThreadLocal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用其他类库的格式化类"><span class="toc-text">使用其他类库的格式化类</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>
