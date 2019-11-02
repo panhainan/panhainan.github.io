@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="十六子">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="theme-version" content="1.2.3">
+    <meta name="root" content="/">
+    <link rel="dns-prefetch" href="http://panhainan.github.io">
+    <!--SEO-->
+
+<meta name="keywords" content="API返回值">
+
+
+<meta name="description" content="SpringBoot对于Http请求做了两种处理，一种是返回视图，一种是返回JSON。都使用的是HTTP统一的状态码来对返回状态进行表述。
+很多公司都喜欢包装一种自己的返回值，使用自己定义的业务...">
+
+
+<meta name="robots" content="all">
+<meta name="google" content="all">
+<meta name="googlebot" content="all">
+<meta name="verify" content="all">
+    <!--Title-->
+
+<title>
+    
+    SpringBoot统一包装接口返回值 |
+    
+    十六子
+</title>
+
+<link rel="alternate" href="/atom.xml" title="十六子" type="application/atom+xml">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+    
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+    
+<div class="hide">
+    <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan class='cnzz_stat_icon_1263868967 hide' %3E%3Cscript%20src%3D%22https%3A%2F%2Fs95.cnzz.com%2Fz_stat.php%3Fweb_id%3D1272564536%22%3E%3C%2Fscript%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263868967%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</div>
+
+
+
+
+    
+
+</head></html>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+<body>
+    <header class="main-header"  style="background-image:url(
+    http://img.baxias.tech/banner.jpg)"
+     >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title='潘海南'>
+            <img src="/img/avatar.jpg" alt="logo头像" class="img-responsive center-block">
+        </a>
+        <div class="branding">
+            <!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+            <h2>
+                不破不立
+            </h2>
+            
+        </div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                        <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="http://panhainan.github.io">
+                        十六子</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/"><i class="fa "></i>
+                                首页</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="/archives"><i class="fa "></i>
+                                归档</a>
+                        </li>
+                        
+                        <li role="presentation" class="text-center">
+                            <a href="https://github.com/panhainan/"><i class="fa "></i>
+                                GitHub</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container" style="width:95%">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="SpringBoot统一包装接口返回值">
+            
+            SpringBoot统一包装接口返回值
+            
+        </h1>
+        <div class="post-meta">
+	
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">
+            2019/11/02</span>
+    </span>
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a> <a class="category-link" href="/categories/SpringBoot/Java/">Java</a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            <a class="tag-link" href="/tags/API返回值/">API返回值</a>
+            
+        </span>
+    </span>
+    
+    
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-eye"></i>
+        <span id="busuanzi_value_page_pv"></span>
+    </span>
+    
+    
+</div>
+        
+        
+    </div>
+    
+    <div class="post-body post-content">
+        <p>SpringBoot对于Http请求做了两种处理，一种是返回视图，一种是返回JSON。都使用的是HTTP统一的状态码来对返回状态进行表述。</p>
+<p>很多公司都喜欢包装一种自己的返回值，使用自己定义的业务状态码来处理；今天我们就来简单的统一包装一下API的返回值。</p>
+<a id="more"></a> 
+<p><strong>记得看总结！！！记得看总结！！！记得看总结！！！</strong></p>
+<p>大致的流程：</p>
+<ol>
+<li>定义返回值类型Result</li>
+<li>定义响应状态码枚举ResultCode</li>
+<li>定义返回值工具类ResultUtils</li>
+<li>定义返回值注解@ResponseResult</li>
+<li>定义处理器拦截器ResponseInterceptor</li>
+<li>定义返回值包装处理器ResponseHandler</li>
+<li>注册处理器拦截器和String返回类型转换器</li>
+<li>定义全局异常处理器AppExceptionHandler</li>
+</ol>
+<h2 id="1-定义返回值类型Result"><a href="#1-定义返回值类型Result" class="headerlink" title="1. 定义返回值类型Result"></a>1. 定义返回值类型Result</h2><p>首先，我们需要设定好我们的返回值类型：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Result</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 时间戳</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Date timestamp;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态码</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer code;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态码描述</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面就是大多数公司会采用的方式，可能有些会去掉时间戳，有些会增加请求路径path，有些会增加异常时的详细信息errorMessages等等。</p>
+<h2 id="2-定义响应状态码枚举ResultCode"><a href="#2-定义响应状态码枚举ResultCode" class="headerlink" title="2. 定义响应状态码枚举ResultCode"></a>2. 定义响应状态码枚举ResultCode</h2><p>然后，我们就需要定义好我们状态码枚举，像下面这样：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> ResultCode &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 成功状态码 1000 */</span></span><br><span class="line">    SUCCESS(<span class="number">1000</span>,<span class="string">"成功"</span>),</span><br><span class="line">    APP_EXCEPTION(<span class="number">2000</span>,<span class="string">"系统错误"</span>),</span><br><span class="line">    <span class="comment">/** 参数相关状态码 2100-2199 */</span></span><br><span class="line">    PARAM_IS_INVALID(<span class="number">2100</span>, <span class="string">"参数无效"</span>),</span><br><span class="line">    PARAM_IS_BLANK(<span class="number">2101</span>,<span class="string">"参数为空"</span>),</span><br><span class="line">    PARAM_NOT_COMPLETE(<span class="number">2102</span>,<span class="string">"参数不完整"</span>),</span><br><span class="line">    PARAM_TYPE_BIND_ERROR(<span class="number">2101</span>,<span class="string">"参数类型错误"</span>),</span><br><span class="line">    ;</span><br><span class="line">    <span class="keyword">private</span> Integer code;</span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>像上面举的参数相关，可能还有用户相关，业务相关等等。</p>
+<h2 id="3-定义返回值工具类ResultUtils"><a href="#3-定义返回值工具类ResultUtils" class="headerlink" title="3.定义返回值工具类ResultUtils"></a>3.定义返回值工具类ResultUtils</h2><p>有了上述两个，我们其实可以直接在Controller方法返回值处通过new Result方式来直接使用包装返回类型了。</p>
+<p>但是，当我们的接口越来越多时，我们会发现Controller方法一直在做重复的new Result操作，而且这个操作与业务无关，正常来说与业务无关的操作频繁出现会让开发者为难，同时代码也是千篇一律，没有重要关注点了。</p>
+<p>因此，我们需要一个工具类来统一去掉new Result的方式，ResultUtils登场了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResultUtils</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> String RESPONSE_RESULT = <span class="string">"RESPONSE_RESULT"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ResultUtils</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Result <span class="title">success</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Result r = <span class="keyword">new</span> Result();</span><br><span class="line">        r.setResponseCode(ResultCode.SUCCESS);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Result <span class="title">success</span><span class="params">(Object data)</span> </span>&#123;</span><br><span class="line">        Result r = success();</span><br><span class="line">        r.setData(data);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Result <span class="title">failure</span><span class="params">(ResultCode resultCode)</span> </span>&#123;</span><br><span class="line">        Result r = <span class="keyword">new</span> Result();</span><br><span class="line">        r.setResponseCode(resultCode);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Result <span class="title">failure</span><span class="params">(ResultCode resultCode, Object data)</span> </span>&#123;</span><br><span class="line">        Result r = <span class="keyword">new</span> Result();</span><br><span class="line">        r.setResponseCode(resultCode);</span><br><span class="line">        r.setData(data);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，每次我们在Controller返回方法处调用ResultUtils.success或者failure就可以了。</p>
+<p>但是仔细一看，我们会发现其实这样也是换汤不换药，归根结底还是没有解决重复大量的与业务无关的Result代码。</p>
+<p>这时候，就需要使用注解来处理了，我们可以定义一个类注解，或者方法注解，来统一处理这一类Controller，让这些重复的操作在注解中完成就好了，我们继续关注我们的业务就ok了。所以ResponseResult注解来了。</p>
+<h2 id="4-定义返回值注解-ResponseResult"><a href="#4-定义返回值注解-ResponseResult" class="headerlink" title="4. 定义返回值注解@ResponseResult"></a>4. 定义返回值注解@ResponseResult</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ResponseResult &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>仔细一看，这个注解也没啥，就是表明在运行时生效，可以标注在类和方法体上。就这么简单？当然不，我们还需要对注解进行处理。</p>
+<h2 id="5-定义处理器拦截器ResponseInterceptor"><a href="#5-定义处理器拦截器ResponseInterceptor" class="headerlink" title="5. 定义处理器拦截器ResponseInterceptor"></a>5. 定义处理器拦截器ResponseInterceptor</h2><p>我们定义一个HandlerInterceptor，重写他的preHandler方法，用来拦截所有的处理器方法（即Controller方法），来判断这些方法以及它所在类是否标注@ResponseResult注解，如果标注了，那么就请求头上打上一个tag，用于后续包装返回结果做标记。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResponseInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (handler <span class="keyword">instanceof</span> HandlerMethod) &#123;</span><br><span class="line">            <span class="keyword">final</span> HandlerMethod handlerMethod = (HandlerMethod) handler;</span><br><span class="line">            <span class="keyword">final</span> Class&lt;?&gt; clazz = handlerMethod.getBeanType();</span><br><span class="line">            <span class="keyword">final</span> Method method = handlerMethod.getMethod();</span><br><span class="line">            <span class="keyword">if</span> (clazz.isAnnotationPresent(ResponseResult.class)) &#123;</span><br><span class="line">                request.setAttribute(ResultUtils.RESPONSE_RESULT, clazz.getAnnotation(ResponseResult.class));</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.isAnnotationPresent(ResponseResult.class)) &#123;</span><br><span class="line">                request.setAttribute(ResultUtils.RESPONSE_RESULT, method.getAnnotation(ResponseResult.class));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意这里需要将其标注为@Component，作为一个Spring的Bean放入Spring的容器中，后续会用到。</p>
+<h2 id="6-定义返回值包装处理器ResponseHandler"><a href="#6-定义返回值包装处理器ResponseHandler" class="headerlink" title="6. 定义返回值包装处理器ResponseHandler"></a>6. 定义返回值包装处理器ResponseHandler</h2><p>上面再处理器拦截器中打了一个标记，下面是不是该处理这个标记了呢。</p>
+<p>我们定义一个ResponseBodyAdvice返回结果包装处理器，重写supports和beforeBodyWrite方法。<br>在supports方法中，我们来判断http请求是否有携带上面的标记，如果有携带，则返回true，表示该请求需要对返回值进行包装，要求它进入beforeBodyWrite方法中处理返回值。如果不携带就直接跳过该处理器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResponseHandler</span> <span class="keyword">implements</span> <span class="title">ResponseBodyAdvice</span>&lt;<span class="title">Object</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">supports</span><span class="params">(MethodParameter methodParameter, Class&lt;? extends HttpMessageConverter&lt;?&gt;&gt; aClass)</span> </span>&#123;</span><br><span class="line">        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();</span><br><span class="line">        <span class="keyword">if</span> (sra == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        HttpServletRequest request = sra.getRequest();</span><br><span class="line">        ResponseResult responseResult = (ResponseResult) request.getAttribute(ResultUtils.RESPONSE_RESULT);</span><br><span class="line">        <span class="keyword">return</span> responseResult != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">beforeBodyWrite</span><span class="params">(Object resultBody, MethodParameter methodParameter, MediaType mediaType, Class&lt;? extends HttpMessageConverter&lt;?&gt;&gt; aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (resultBody <span class="keyword">instanceof</span> Result) &#123;</span><br><span class="line">            <span class="keyword">return</span> resultBody;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ResultUtils.success(resultBody);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，该方法需要标注注解@ControllerAdvice。</p>
+<p>还需要注意的是我在beforeBodyWrite方法中有一段代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (resultBody <span class="keyword">instanceof</span> Result) &#123;</span><br><span class="line">    <span class="keyword">return</span> resultBody;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里主要是处理后续的全局异常返回值的。剧透一下，是因为异常处理器返回值本身已经处理为Result，因此便不需要重复包装。</p>
+<h2 id="7-注册处理器拦截器和String返回类型转换器（WebMvcConfigurer）"><a href="#7-注册处理器拦截器和String返回类型转换器（WebMvcConfigurer）" class="headerlink" title="7. 注册处理器拦截器和String返回类型转换器（WebMvcConfigurer）"></a>7. 注册处理器拦截器和String返回类型转换器（WebMvcConfigurer）</h2><p>到这，基本上上完成了，但是还需要注意的是，我们需要将上面的处理器拦截器注册到WebMVC 的InterceptorRegistry中，并设置它的拦截规则。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationConfigure</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ResponseInterceptor responseInterceptor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addInterceptor(responseInterceptor).addPathPatterns(<span class="string">"/**"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>是不是到这就ok了呢？</p>
+<p>这里基本上是的，但是，我们可以尝试一下在@RestController标注Controller方法中，返回一个String类型的值，就会出现一个异常：Result can not cast to String（大致意思是这样）。<br>这里我们需要对String类型返回值处理一下，用Json类型转换器就转换一下就可以了。</p>
+<p>如下完整的代码就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationConfigure</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ResponseInterceptor responseInterceptor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addInterceptor(responseInterceptor).addPathPatterns(<span class="string">"/**"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HttpMessageConverters <span class="title">messageConverters</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HttpMessageConverters(<span class="keyword">new</span> FastJsonHttpMessageConverter());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ok了么？没有，正常结果返回是ok了，那么异常返回呢？</p>
+<h2 id="8-定义全局异常处理器APPExceptionHandler"><a href="#8-定义全局异常处理器APPExceptionHandler" class="headerlink" title="8. 定义全局异常处理器APPExceptionHandler"></a>8. 定义全局异常处理器APPExceptionHandler</h2><p>上面我们在第6步提到了异常返回的时候的处理，这里便讲的是这个。</p>
+<p>这里我们定义全局异常处理器，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppExceptionHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(BindException.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Result <span class="title">handlerBindException</span><span class="params">(BindException e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResultUtils.failure(ResultCode.PARAM_TYPE_BIND_ERROR);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(ParamException.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Result <span class="title">handlerParamException</span><span class="params">(ParamException e)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResultUtils.failure(ResultCode.PARAM_IS_INVALID);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(AppException.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Result <span class="title">handlerAppException</span><span class="params">(AppException e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResultUtils.failure(ResultCode.APP_EXCEPTION);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码中的AppException，ParamException这些都是需要自定义的，继承自RuntimeException即可，就不贴出来了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面一个流程走下来，大家对于API统一返回值包装也是有个大致的熟悉了，国内很多公司都采用了这一套，也确实比较形象。</p>
+<p>那么我们思考一个问题，SpringBoot不是自定义了一套JSON返回类型吗，我们真的还需要多次一举的再次包装么？<br>我之前也没意识到，只是觉得既然大家都这么做了，应该是有道理的。直到我看到这篇文章下的评论（重点是评论，不是文章，当然，文章也不错）</p>
+<p><a href="https://segmentfault.com/a/1190000017908482?utm_source=tag-newest" target="_blank" rel="noopener">https://segmentfault.com/a/1190000017908482?utm_source=tag-newest</a></p>
+<p>评论内容为：</p>
+<blockquote>
+<p><a href="https://segmentfault.com/a/1190000017908482?utm_source=tag-newest#911" title="举报" target="_blank" rel="noopener">
+</a><br><strong><a href="https://segmentfault.com/u/gh6497" target="_blank" rel="noopener">gh6497</a></strong> · 8月14日</p>
+</blockquote>
+<blockquote>
+<p>能不能尊重下http协议。全世界只有中国程序员还在包装接口返回值, 强行增加代码量.</p>
+</blockquote>
+<p>哎呀，我去，我一看，怎么好像很有道理的样子；然后仔细一想，确实有那么些道理；然后就动手试了试，发现人家确实说的极有道理。</p>
+<p>大家可以去动手看看，用用rest的一些工具试试看，然后想想是不是这样。</p>
+<p>当然，包装接口在国内确实常见，也一定是有它的道理的。</p>
+<p>看公司、个人的取舍吧。</p>
+<p>还是得多思考，不能人云亦云啊。</p>
+
+    </div>
+    
+    <div class="reward" ontouchstart>
+    <div class="reward-wrap">赏
+        <div class="reward-box">
+            
+            <span class="reward-type">
+                <img class="alipay" src="http://img4.baxias.tech/alipay.jpg"><b>支付宝打赏</b>
+            </span>
+            
+            
+            <span class="reward-type">
+                <img class="wechat" src="http://img4.baxias.tech/wechatpay.jpg"><b>微信打赏</b>
+            </span>
+            
+        </div>
+    </div>
+    <p class="reward-tip">
+        赞赏是不耍流氓的鼓励
+    </p>
+</div>
+    
+    <div class="post-footer">
+        <div>
+            
+            转载声明：
+            商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="http://www.sixteen.site" target="_blank">十六子</a>
+            
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</article>
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+    <a href="/2019/10/01/CentOS7静态IP设置/" class="next-post btn btn-default" title='CentOS7静态IP设置'>
+        <span class="hidden-lg">下一篇</span>
+        <span class="hidden-xs">
+            CentOS7静态IP设置</span><i class="fa fa-angle-right fa-fw"></i>
+    </a>
+    
+</div>
+
+<div id="comments">
+    
+<link rel="stylesheet" href="https://cdn.bootcss.com/gitalk/1.4.1/gitalk.min.css">
+<script src="//cdn.bootcss.com/gitalk/1.4.1/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.9.0/js/md5.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+var gitalk = new Gitalk({
+    // Gitalk配置
+    language: "zh-CN",
+    clientID: "ca410461aebf8b051831",
+    clientSecret: "66f8b10c1715c649c25640f429390c7a2edb09bb",
+    repo: "blog-comment",
+    owner: "panhainan",
+    admin: ["panhainan"],
+    id: md5(location.pathname),
+	title: location.pathname, 
+    distractionFreeMode: true
+});
+gitalk.render('gitalk-container');
+</script>
+
+</div>
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
+    <div class="widget">
+        <h3 class="title">
+            文章目录
+        </h3>
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-定义返回值类型Result"><span class="toc-text">1. 定义返回值类型Result</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-定义响应状态码枚举ResultCode"><span class="toc-text">2. 定义响应状态码枚举ResultCode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-定义返回值工具类ResultUtils"><span class="toc-text">3.定义返回值工具类ResultUtils</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-定义返回值注解-ResponseResult"><span class="toc-text">4. 定义返回值注解@ResponseResult</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-定义处理器拦截器ResponseInterceptor"><span class="toc-text">5. 定义处理器拦截器ResponseInterceptor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-定义返回值包装处理器ResponseHandler"><span class="toc-text">6. 定义返回值包装处理器ResponseHandler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-注册处理器拦截器和String返回类型转换器（WebMvcConfigurer）"><span class="toc-text">7. 注册处理器拦截器和String返回类型转换器（WebMvcConfigurer）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-定义全局异常处理器APPExceptionHandler"><span class="toc-text">8. 定义全局异常处理器APPExceptionHandler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+        
+    </div>
+</aside>
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+<a id="back-to-top" class="icon-btn hide">
+    <i class="fa fa-chevron-up"></i>
+</a>
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="busuanzi">
+    
+    访问量:
+    <strong id="busuanzi_value_site_pv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    &nbsp; | &nbsp;
+    访客数:
+    <strong id="busuanzi_value_site_uv">
+        <i class="fa fa-spinner fa-spin"></i>
+    </strong>
+    
+</div>
+            </div>
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2019
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/js/app.js?rev=@@hash"></script>
+</body>
+</html>
